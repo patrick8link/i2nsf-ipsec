@@ -16,9 +16,9 @@ This docker compose feeds from [Dockerfile for sysrepo-netopeer2](https://github
 
 To test the different scenarios:
 
-`# git clone https://gitlab.atica.um.es/gabilm.um.es/sysrepo-netopeer2-cfgipsec2.git `
+`# git clone https://github.com/patrick8link/i2nsf-ipsec.git `
 
-`# cd sysrepo-netopeer2-cfgipsec2`
+`# cd i2nsf-ipsec`
 
 `# cd scenario_name`
 
