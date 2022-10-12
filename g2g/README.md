@@ -4,10 +4,10 @@ The example is based on the following scenario:
 
 
 
-					 				      controller 
-									     netopeer-cli>   
-										    (.200)  
-								 		      |               
+                                         controller 
+                                        netopeer-cli>   
+											(.200)  
+											  |               
                   /---------------------(10.0.1.0/24)-------------------\
                  /                      /           \					  \
                 /                      /             \					   \
