@@ -5,18 +5,18 @@
 The example is based on the following scenario:
 
 
-					 		controller 
-							netopeer-cli>   
-							   (.200)  
-								 |               
+                             controller 
+                            netopeer-cli>   
+                               (.200)  
+                                 |               
                   /-----------(10.0.1.0/24)------\
                  /                                \
                 /                                  \
-			   /                                    \
-            (.204)									(.234)
-	          h1 				                      h2
+               /                                    \
+            (.204)                                    (.234)
+              h1                                       h2
             (.100) ================ IPSEC========== (.200)
-          				     (192.168.123.0/24) 
+                               (192.168.123.0/24) 
 
 
 # Host-to-Host SAs ESP transport mode - Case 2 (IKEless case)
@@ -188,21 +188,3 @@ Run tcpdump in h1 or h2
 ## Stop the testbed:
 
 `\# sudo ./down.sh`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
