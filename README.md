@@ -1,52 +1,34 @@
-# Docker compose for instances of sysrepo-netopeer2 with cfgipsec2 support
+# NETCONF/YANG module for IPsec SAs management (cfgipsec2)
 
 
-This docker compose feeds from [Dockerfile for sysrepo-netopeer2](https://github.com/sysrepo-archive/docker-sysrepo-netopeer2) and from [cfgipsec: IPsec SAs configuration](https://gitlab.atica.um.es/gabilm.um.es/cfgipsec2).
+IETF Working Draft at [https://tools.ietf.org/html/draft-ietf-i2nsf-sdn-ipsec-flow-protection]. 
 
-## Scenarios:
+This NETCONF/YANG module is based on [Netopeer2](https://github.com/CESNET/Netopeer2).
 
-- Gw-2-Gw SA with ESP in tunnel mode (case 1 and case 2). Set up a basic gateway to gateway scenario with manual controller. 
-
-- Host-2-Host SA with ESP in transport mode (case 1 and case 2). Set up a basic host to host scenario with manual controller. 
-
-- N Host SA with ESP in transport mode: Set up a NxN host to host scenario dynamically managed by a python-based controller. 
+You can easily test an example scenario with Docker compose at: [https://gitlab.atica.um.es/gabilm.um.es/sysrepo-netopeer2-cfgipsec2]
 
 
-## Try it:
+## Contributors
 
-To test the different scenarios:
+### Professors:
 
-`# git clone https://github.com/patrick8link/i2nsf-ipsec.git `
+- Rafael Marín López (rafa at um dot es, University of Murcia)
+- Fernando Pereñiguez García (fernando dot pereniguez at cud dot upct dot es, University Defense Center, CUD)
+- Gabriel López Millán (gabilm at um dot es, University of Murcia)
 
-`# cd i2nsf-ipsec`
+### Collaborators:
 
-`# cd scenario_name`
+- Alejandro Pérez Méndez
 
-Follow the README.md instructions.
+### Students:
 
-This is based on the work of https://gitlab.atica.um.es/gabilm.um.es/cfgipsec2/tree/master
-
-
-
-
- 
-
-
-
-
+- Felipe Roca Blaya
+- Ignacio Martínez Alpiste
+- Rubén Ricard Sánchez
+- Adrián Miralles Palazón
+- Javier Pastor Galindo
+- Valentin Kivachuck
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Contact: gabilm at um dot es
 
