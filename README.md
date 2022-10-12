@@ -24,6 +24,7 @@ To test the different scenarios:
 
 Follow the README.md instructions.
 
+This is based on the work of https://gitlab.atica.um.es/gabilm.um.es/cfgipsec2/tree/master
 
 
 
