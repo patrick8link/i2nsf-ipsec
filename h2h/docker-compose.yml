@@ -1,0 +1,60 @@
+version: '3'
+services:
+  c:
+    build: base/netopeer-cli
+    hostname: c
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
+    networks:
+        sdn_control_h2h:
+            ipv4_address: 10.0.1.200
+  h1:
+    build: base/netopeer-server
+    hostname: h1
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
+    environment:
+      - NETCONF_USER=netconf
+      - NETCONF_PASSWORD=netconf
+      - SDN_NET=10.0.1.0/24
+    depends_on:
+      - "c"
+    networks:
+        sdn_control_h2h:
+            ipv4_address: 10.0.1.204
+        sdn_data_h2h:
+            ipv4_address: 192.168.123.100
+  h2:
+    hostname: h2
+    build: base/netopeer-server
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
+    environment:
+      - NETCONF_USER=netconf
+      - NETCONF_PASSWORD=netconf
+      - SDN_NET=10.0.1.0/24
+    depends_on:
+      - "c"
+    networks:
+        sdn_control_h2h:
+            ipv4_address: 10.0.1.234
+        sdn_data_h2h:
+            ipv4_address: 192.168.123.200 
+networks:
+  sdn_control_h2h:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.0.1.0/24
+    driver_opts:
+     com.docker.network.bridge.name: sdn_control_h2h
+  sdn_data_h2h:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 192.168.123.0/24
+    driver_opts:
+     com.docker.network.bridge.name: sdn_data_h2h
