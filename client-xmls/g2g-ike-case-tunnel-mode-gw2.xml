@@ -31,11 +31,11 @@
         <initial-contact>false</initial-contact>
         <fragmentation><enabled>false</enabled></fragmentation>
         <ike-sa-lifetime-soft>
-           <rekey-time>60</rekey-time>
-           <reauth-time>120</reauth-time>
+           <rekey-time>0</rekey-time>
+           <reauth-time>0</reauth-time>
         </ike-sa-lifetime-soft>
         <ike-sa-lifetime-hard>
-           <over-time>3600</over-time>
+           <over-time>0</over-time>
         </ike-sa-lifetime-hard>
         <!--AUTH_HMAC_SHA2_512_256-->
         <ike-sa-intr-alg>14</ike-sa-intr-alg>
