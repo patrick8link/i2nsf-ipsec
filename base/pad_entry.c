@@ -20,7 +20,7 @@
 #include "pad_entry.h"
 
 pad_entry_node* init_pad_node = NULL;
-int entry_id;
+char *entry_id;
 int key;
 char ipv4_addr[30];
 char auth_protocol[50];
@@ -57,18 +57,18 @@ void show_pad_list(){
 	pad_entry_node *node = init_pad_node;
 	int index = 0;
 
-	INFO("INDEX --- PAD_ENTRY_ID --- IDENTITY --- PAD_AUTH_PROTOCOL --- AUTH_M --- SECRET ---- ");
+	INFO("INDEX --- PAD_NAME --- IDENTITY --- PAD_AUTH_PROTOCOL --- AUTH_M --- SECRET ---- ");
 	while (node != NULL){
-		INFO("%d --- %d --- %s --- %s --- %s --- %s ", index, node->pad_entry_id, node->ipv4_address, node->pad_auth_protocol, node->auth_m, node->secret);
+		INFO("%d --- %s --- %s --- %s --- %s --- %s ", index, node->pad_name, node->ipv4_address, node->pad_auth_protocol, node->auth_m, node->secret);
 		node=node->next;
 		index++;
 	}
 }
 
-pad_entry_node* create_node(int entry_idCN, char* ipv4, char* auth_protocolCN, char* auth_methodCN, char* ssecretCN){
+pad_entry_node* create_node(char *entry_name, char* ipv4, char* auth_protocolCN, char* auth_methodCN, char* ssecretCN){
 
 	pad_entry_node *new_node = (pad_entry_node*) malloc(sizeof(pad_entry_node));
-	new_node->pad_entry_id= entry_idCN;
+	new_node->pad_name= entry_name;
 	new_node->ipv4_address= (char *) malloc(sizeof(char) * strlen(ipv4));
 	strcpy(new_node->ipv4_address, ipv4);
 	new_node->pad_auth_protocol = (char*) malloc(sizeof(char) * strlen(auth_protocolCN));
@@ -82,7 +82,7 @@ pad_entry_node* create_node(int entry_idCN, char* ipv4, char* auth_protocolCN, c
 	return new_node;
 }
 
-int readPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char *pad_id) {
+int readPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char *pad_name) {
 
 	int rc = SR_ERR_OK;
     sr_val_t *old_value = NULL;
@@ -91,9 +91,9 @@ int readPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
     sr_val_t *value = NULL;
     char  *name = NULL;
 
-	entry_id = atoi(pad_id);
+	entry_id = pad_name;
 
-	DBG("**Read PAD entry: %i",entry_id);
+	DBG("**Read PAD entry: %s",entry_id);
 	rc = sr_get_change_next(sess, it, &oper, &old_value, &new_value);
     if (SR_ERR_OK != rc)
         return rc;
@@ -104,7 +104,6 @@ int readPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
 
 		if ((0 == strncmp(value->xpath, xpath,strlen(xpath))) && (strlen(value->xpath)!=strlen(xpath))) {
         	name = strrchr(value->xpath, '/');
-
 			if (0 == strcmp("/id_key", name)) {
             	key = value->data.int64_val;
             	DBG ("id_keyt %i",key);
@@ -113,11 +112,11 @@ int readPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
                 strcpy(ipv4_addr, value->data.string_val);
                 DBG("ipv4-address: %s",ipv4_addr);
             }
-			else if (0 == strcmp("/pad-auth-protocol",name)) {
+			else if (0 == strcmp("/auth-protocol",name)) {
                 strcpy(auth_protocol, value->data.string_val);
                 DBG("auth_protocol: %s",auth_protocol);
             }
-			else if (0 == strcmp("/auth-m",name)) {
+			else if (0 == strcmp("/auth-method",name)) {
 				if (0 == strcmp(value->data.string_val,"pre-shared")) {		
                     strcpy(auth_method, "psk");
                     DBG("auth_method: %s",auth_method);
@@ -140,14 +139,14 @@ int readPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
 	return SR_ERR_OK;
 }
 
-int addPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char *pad_id) {
+int addPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char *pad_name) {
 
 	int rc = SR_ERR_OK;
-	entry_id = atoi(pad_id);
+	entry_id = pad_name;
 
-    DBG("**ADD PAD entry: %i",entry_id);
+    DBG("**ADD PAD entry: %s",entry_id);
 
-	rc = readPAD_entry(sess,it,xpath,pad_id);
+	rc = readPAD_entry(sess,it,xpath,pad_name);
 	if (rc != SR_ERR_OK) {
         ERR("ADD PAD in verifyPAD_entry: %s",sr_strerror(rc));
         return rc;
@@ -161,7 +160,7 @@ int addPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char *
 }
 
 
-int verifyPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, sr_change_oper_t oper, char *xpath,char *pad_id) {
+int verifyPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, sr_change_oper_t oper, char *xpath,char *pad_name) {
 
 	int rc = SR_ERR_OK;
     sr_val_t *old_value = NULL;
@@ -170,9 +169,9 @@ int verifyPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, sr_change_oper
     sr_val_t *value = NULL;
     char  *name = NULL;
 
-	entry_id = atoi(pad_id);
+	entry_id = pad_name;
 
-	DBG("**VERIFY PAD entry: %i",entry_id);
+	DBG("**VERIFY PAD entry: %s",entry_id);
 
 	if (oper == SR_OP_CREATED) {
 		DBG("Verify PAD entry pad_id is not already used");

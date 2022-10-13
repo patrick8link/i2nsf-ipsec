@@ -1,0 +1,15 @@
+2022-10-12 08:02:58,338 CRIT Supervisor running as root (no user in config file)
+2022-10-12 08:02:58,339 INFO supervisord started with pid 1
+2022-10-12 08:02:59,342 INFO spawned: 'netconf' with pid 9
+2022-10-12 08:02:59,345 INFO spawned: 'routes' with pid 10
+2022-10-12 08:02:59,346 INFO spawned: 'ipsec' with pid 11
+2022-10-12 08:02:59,361 INFO spawned: 'ietf-ipsec' with pid 12
+2022-10-12 08:02:59,387 INFO exited: routes (exit status 0; not expected)
+2022-10-12 08:02:59,692 INFO gave up: routes entered FATAL state, too many start retries too quickly
+2022-10-12 08:03:00,352 INFO success: netconf entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-10-12 08:03:00,352 INFO success: ipsec entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-10-12 08:03:00,352 INFO success: ietf-ipsec entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-10-12 08:03:01,464 INFO exited: ipsec (exit status 0; expected)
+2022-10-12 08:03:02,576 INFO exited: ietf-ipsec (exit status 0; expected)
+2022-10-12 08:04:29,161 INFO reaped unknown pid 817
+2022-10-12 10:54:33,004 INFO reaped unknown pid 5280

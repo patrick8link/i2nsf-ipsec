@@ -26,7 +26,7 @@
 
 typedef struct pad_entry_node{
 
-	int pad_entry_id;
+	char *pad_name;
 	char *ipv4_address;
 	char *pad_auth_protocol;
 	char *auth_m;

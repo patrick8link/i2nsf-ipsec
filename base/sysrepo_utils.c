@@ -68,7 +68,7 @@ int ike_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath, 
     sr_val_t *old_value = NULL;
     sr_val_t *new_value = NULL;
     char * name = NULL;
-    char * token_ike = "/conn-name";
+    char * token_ike = "/name";
     int l = strlen(token_ike);
     char xpath[MAX_PATH] = "";
 
@@ -85,6 +85,7 @@ int ike_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath, 
         while (SR_ERR_OK == sr_get_change_next(session, it, &oper, &old_value, &new_value)) {
             switch(oper) {
                 case SR_OP_CREATED:
+
                         name = strrchr(new_value->xpath, '/');
                         if (0 == strncmp(token_ike,name,l)) {
 
@@ -148,7 +149,6 @@ int ike_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath, 
                             
                             INFO("Add ike-conn-entry %s",sr_val_to_str(new_value));
                             strncpy(xpath,new_value->xpath,strlen(new_value->xpath)-l);
-
                             if (!addIKE_conn_entry(session,it,xpath,sr_val_to_str(new_value))) {
                                 INFO("ike-conn-entry added");
                             }
@@ -204,7 +204,7 @@ pad_entry_change_cb(sr_session_ctx_t *session, const char *pad_entry_xpath, sr_n
     sr_val_t *old_value = NULL;
     sr_val_t *new_value = NULL;
     char * name = NULL;
-    char * token_pad = "/pad-entry-id"; 
+    char * token_pad = "/name"; 
     int l = strlen(token_pad);
     char xpath[MAX_PATH] = "";  
 
@@ -475,10 +475,9 @@ spd_entry_change_cb(sr_session_ctx_t *session, const char *spd_entry_xpath, sr_n
     sr_val_t *old_value = NULL;
     sr_val_t *new_value = NULL;
     char * name = NULL;
-    char * token_rn = "/rule-number";
+    char * token_rn = "/name";
     int l = strlen(token_rn);   
     char xpath[MAX_PATH] = "";  
-
 
     // Verify event takes place just before changes are applied in datastores 
     if (SR_EV_VERIFY == event) {

@@ -18,6 +18,7 @@
  */
 
 #include "ikev2_entry.h"
+#include "sysrepo_utils.h"
 
 
 char conn_name1[50]="";
@@ -33,7 +34,9 @@ char local_identifier[50]="";
 char remote_ts[30]="";
 char remote_identifier[50]="";
 char local_addrs[30]="";
+char local[30] = "";
 char remote_addrs[30]="";
+char remote[30] = "";
 int pfs_group;
 
 
@@ -285,6 +288,7 @@ int verifyIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, sr_change
 int readIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char *ike_id) {
 
     int rc = SR_ERR_OK;
+    int ac = SR_ERR_OK;
     sr_change_oper_t oper;
     sr_val_t *value = NULL;
     sr_val_t *old_value = NULL;
@@ -308,11 +312,10 @@ int readIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
 
         if ((0 == strncmp(value->xpath, xpath,strlen(xpath))) && (strlen(value->xpath)!=strlen(xpath))) {
             name = strrchr(value->xpath, '/');      
-
-
+            DBG("name:%s",name);
             // conn-name: TBD
             if (0 == strcmp("/autostartup", name)) {
-                if (0 == strcmp(value->data.enum_val,"ALWAYSON")) 
+                if (0 == strcmp(value->data.enum_val,"start")) 
                     strcpy(autostartup,"true");
                 else strcpy(autostartup,"false");
                     DBG ("autostartup %s",autostartup);
@@ -330,17 +333,17 @@ int readIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
             }   
 
             // grouping isakmp-proposal
-            else if (0 == strcmp("/ike-reauth-lifetime", name)) {
+            else if (0 == strcmp("/reauth-time", name)) {
                 ike_reauth_lifetime = value->data.int64_val;
                 DBG ("ike_reauth_lifetime: %i",ike_reauth_lifetime);
             } 
-            else if (0 == strcmp("/ike-sa-lifetime", name)) {
+            else if (0 == strcmp("/rekey-time", name)) {
                 ike_sa_lifetime = value->data.int64_val;
-                DBG ("ike_sa_lifetime: %i",ike_sa_lifetime);
+                DBG ("rekey-time: %i",ike_sa_lifetime);
             } 
-            else if (0 == strcmp("/ipsec-sa-lifetime", name)) {
+            else if (0 == strcmp("/over-time", name)) {
                 ipsec_sa_lifetime = value->data.int64_val;
-                DBG ("ipsec_sa_lifetime: %i",ipsec_sa_lifetime);
+                DBG ("over-time: %i",ipsec_sa_lifetime);
             } 
 			
 			// tmp lifetimes
@@ -363,13 +366,29 @@ int readIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
             // end grouping isakmp-proposal
 
             // local and remote groupings
-            else if (0 == strcmp("/ipv4",name)) {
+            else if (0 == strcmp("/local-pad-entry-name",name)) {
                 if (NULL != strstr(value->xpath,"local")) {
-                   strcpy(local_addrs,value->data.string_val);
+                   strcpy(local,value->data.string_val);
+                   char select_xpath[200];
+                   sr_val_t *values = NULL;
+                   size_t count = 0;
+                   snprintf(select_xpath, 200, "/ietf-i2nsf-ike:ipsec-ike/pad/pad-entry[name='%s']/ipv4-address",local);
+                   ac = sr_get_items(sess, select_xpath, &values, &count);
+                   sr_print_val(values);
+                   strcpy(local_addrs,values->data.string_val);
                    DBG("local ipv4 %s", local_addrs);
                 }
+            }
+            else if (0 == strcmp("/remote-pad-entry-name",name)) {
                 if (NULL != strstr(value->xpath,"remote")) {
-                    strcpy(remote_addrs,value->data.string_val);
+                    strcpy(remote,value->data.string_val);
+                    char select_xpath[200];
+                    sr_val_t *values = NULL;
+                    size_t count = 0;
+                    snprintf(select_xpath, 200, "/ietf-i2nsf-ike:ipsec-ike/pad/pad-entry[name='%s']/ipv4-address",remote);
+                    ac = sr_get_items(sess, select_xpath, &values, &count);
+                    sr_print_val(values);
+                    strcpy(remote_addrs,values->data.string_val);
                     DBG("remote ipv4 %s", remote_addrs);
                 }
             }
@@ -398,6 +417,10 @@ int readIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
                 pfs_group = value->data.int32_val;
                 DBG("pfs_group %i", pfs_group);
             }   
+
+            else if (0 == strcmp("/spd",name)) {
+                break;
+            }
             /*else if (0 == strcmp("phase2-lifetime", name)) {
                 phase2_lifetime = value->data.int64_val;
                 DBG("phase2_lifetime %i", phase2_lifetime);

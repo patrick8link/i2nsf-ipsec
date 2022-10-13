@@ -203,7 +203,7 @@ int removeSPD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,cha
 
     policy_id = atoi(rule_number);
 
-    DBG("****Remove SPD entry %i",policy_id);
+    DBG("****Remove SPD entry %s",rule_number);
 
     rc = readSPD_entry(sess,it,xpath,rule_number,case_value);
     if (rc != SR_ERR_OK) {
@@ -253,11 +253,10 @@ int verifySPD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,sr_change_oper_
     
     // if oper= CREATED
     if (oper == SR_OP_CREATED) {
-        DBG("Verify rule-number is not already used");
-        DBG("Verify ts-number is not already used");
+        DBG("Verify name is not already used");
     } else {
         // if oper= DELETE
-        DBG("Verify rule-number exists");
+        DBG("Verify name exists");
     }    
     
 	return rc;
@@ -284,7 +283,6 @@ int readSPD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
 
             if (oper == SR_OP_CREATED) value = new_value;
             else value = old_value;
-
             /*if (value == NULL) {
                 DBG("SPD read, value == NULL");
                 break;
@@ -292,7 +290,12 @@ int readSPD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
             if (0 == strncmp(value->xpath, xpath,strlen(xpath))) {
 
                 name = strrchr(value->xpath, '/');
-                if (NULL != strstr(value->xpath,"/condition")) {
+                DBG("xpath SPD name: %s",name);
+                if (NULL != strstr(value->xpath,"/anti-replay-window-size")) {
+                    policy_dir = value->data.int32_val;
+                    DBG("anti-replay-window-size: %i",policy_dir);
+                }
+                else if (NULL != strstr(value->xpath,"/traffic-selector")) {
                     if (getSelectorList_it(sess,it,xpath,oper,old_value,new_value)){
                         rc = SR_ERR_VALIDATION_FAILED;
                        break;
@@ -364,7 +367,7 @@ int addSPD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char *
 
     policy_id = atoi(rule_number);
 
-	DBG("**ADD/MOD SPD %s with rule number: %i",xpath, policy_id);
+	DBG("**ADD/MOD SPD %s with rule number: %s",xpath, rule_number);
 
 	rc = readSPD_entry(sess,it,xpath,rule_number,case_value);
 	if (rc != SR_ERR_OK) {
@@ -409,14 +412,12 @@ int addSPD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char *
 
     //    return SR_ERR_OK;
 	//} else {
-    if (case_value == 2) {
-        rc = pf_addpolicy(spd_node);    
-        if (SR_ERR_OK != rc) {
-            ERR("ADD SPD in getSDP_entry: %s", sr_strerror(rc));
-            return rc;     
-        }
+    rc = pf_addpolicy(spd_node);    
+    if (SR_ERR_OK != rc) {
+        ERR("ADD SPD in getSDP_entry: %s", sr_strerror(rc));
+        return rc;     
+    }
 
-	}
     
     //INFO("SPD entry added ");
     show_spd_list();
@@ -438,59 +439,38 @@ int getSelectorList_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
                 
 		//DBG ("add condition: %s",value->xpath);
 		strcpy(new_xpath,xpath);
-		strcat(new_xpath,"/condition");
+		strcat(new_xpath,"/ipsec-policy-config/traffic-selector");
         if ((0 == strncmp(value->xpath, new_xpath,strlen(new_xpath))) && (strlen(value->xpath)!=strlen(new_xpath))) {
 			
             name = strrchr(value->xpath, '/');
             // ONLY ONE TRAFFIC SELECTOR
-            if (0 == strcmp("/direction", name)) {
-                    if (!strcasecmp(value->data.string_val, "OUTBOUND"))
-                        policy_dir =  IPSEC_DIR_OUTBOUND;
-                    else if (!strcasecmp(value->data.string_val, "INBOUND"))
-                        policy_dir = IPSEC_DIR_INBOUND;
-                    else if (!strcasecmp(value->data.string_val, "FORWARD"))
-                        policy_dir = IPSEC_DIR_FORWARD;
-                    else {
-                        rc = SR_ERR_VALIDATION_FAILED;    
-                        ERR("spd-entry Bad direction: %s", sr_strerror(rc));
-                        return rc;
-                    }
-                    DBG("direction: %i",policy_dir);
-            }
-            else if (0 == strcmp("/next-layer-protocol", name)) {
-                    DBG("next-layer-protocol found");
-                    if (!strcasecmp(value->data.string_val, "TCP"))
+            if (0 == strcmp("/inner-protocol", name)) {
+                    DBG("inner-protocol found");
+                    if (value->data.uint8_val == 6)
                         protocol_next_layer =  IPSEC_NLP_TCP;
-                    else if (!strcasecmp(value->data.string_val, "UDP"))
+                    else if (value->data.uint8_val == 17)
                         protocol_next_layer = IPSEC_NLP_UDP;
-                    else if (!strcasecmp(value->data.string_val, "SCTP"))
+                    else if (value->data.uint8_val == 132)
                         protocol_next_layer = IPSEC_NLP_SCTP;
+                    else if (!strcasecmp(value->data.string_val, "any"))
+                        protocol_next_layer = 256;
                     else {
                         rc = SR_ERR_VALIDATION_FAILED;
-                        ERR("spd-entry Bad next-layer-protocol: %s", sr_strerror(rc));
+                        ERR("spd-entry Bad inner-protocol: %s", sr_strerror(rc));
                         return rc;
                     }
-                    DBG("next-layer-protocol: %i",protocol_next_layer);
+                    DBG("inner-protocol: %i",protocol_next_layer);
             }
 
-			else if (0 == strncmp("/start", name,strlen("/start"))) {
-                    //sr_print_val(value);
-					if (NULL != strstr(value->xpath,"/local-addresses")) {
-                        strcpy(src, value->data.string_val);    
-                        DBG("local-address start: %s",src);
-					}
-					if (NULL != strstr(value->xpath,"/remote-addresses")) {
-						strcpy(dst, value->data.string_val);
-						DBG("remote-address start: %s",dst);
-					}
-                    if (NULL != strstr(value->xpath,"/local-ports")) {
-                        srcport = value->data.int64_val;
-						DBG("local-port start: %i",srcport);
-					}
-					if (NULL != strstr(value->xpath,"/remote-ports")) {
-                        dstport = value->data.int64_val;
-                        DBG("remote-port start: %i",dstport);
-                    }
+			else if (0 == strncmp("/local-prefix", name,strlen("/local-prefix"))) {
+                    strcpy(src, value->data.string_val);    
+                    DBG("local-prefix: %s",src);
+
+			}
+
+            else if (0 == strncmp("/remote-prefix", name,strlen("/remote-prefix"))) {
+                    strcpy(dst, value->data.string_val);
+                    DBG("remote-prefix: %s",dst);
 			}
 
 		} else break;
@@ -501,7 +481,7 @@ int getSelectorList_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
     } while (SR_ERR_OK == (rc = sr_get_change_next(sess, it,&oper, &old_val, &new_val))); 
 
 
-    return SR_ERR_OK;	
+    return SR_ERR_OK;
 
 }
 
@@ -518,21 +498,19 @@ int getProcessing_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath, s
         if (oper == SR_OP_CREATED) value = new_val;
         else value = old_val;
         //DBG ("add processing_it: %s",value->xpath);
-
-
         strcpy(new_xpath,xpath);
-        strcat(new_xpath,"/processing-info");
+        strcat(new_xpath,"/ipsec-policy-config/processing-info");
 
 		if ((0 == strncmp(value->xpath, new_xpath,strlen(new_xpath))) && (strlen(value->xpath)!=strlen(new_xpath))) {
 
             name = strrchr(value->xpath, '/');
             // SE SUPONE QUE SOLO HAY UN TRAFFIC SELECTOR
             if (0 == strcmp("/action", name)) {
-                if (!strcasecmp(value->data.string_val, "PROTECT"))
+                if (!strcasecmp(value->data.string_val, "protect"))
                     action_policy_type=IPSEC_POLICY_PROTECT;
-                else if (!strcasecmp(value->data.string_val, "BYPASS"))
+                else if (!strcasecmp(value->data.string_val, "bypass"))
                     action_policy_type=IPSEC_POLICY_BYPASS;
-                else if (!strcasecmp(value->data.string_val, "DISCARD"))
+                else if (!strcasecmp(value->data.string_val, "discard"))
                     action_policy_type=IPSEC_POLICY_DISCARD;
                 else {
                     rc = SR_ERR_VALIDATION_FAILED;
@@ -541,12 +519,12 @@ int getProcessing_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath, s
                 }
                 DBG("action: %i",action_policy_type);
             }
-		    else if (0 == strcmp("/security-protocol", name)) {
-                if (!strcasecmp(value->data.string_val, "ESP")){
+		    else if (0 == strcmp("/protocol-parameters", name)) {
+                if (!strcasecmp(value->data.string_val, "esp")){
                     satype = SADB_SATYPE_ESP;
                     proto = IPPROTO_ESP;
                 }
-                else if (!strcasecmp(value->data.string_val, "AH")) {
+                else if (!strcasecmp(value->data.string_val, "ah")) {
                     satype = SADB_SATYPE_AH;
                     proto = IPPROTO_AH;
                 }
