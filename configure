@@ -2912,7 +2912,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-TARGET="ietf-ipsec"
+TARGET="ietf-i2nsf-ike"
 
 CFLAGS="-Wall -w  -O3 -fPIC"
 
