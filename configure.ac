@@ -2,7 +2,7 @@ AC_INIT([ietf-ipsec], [0.1], [gabilm@um.es])
 AC_PROG_CC
 
 
-AC_SUBST([TARGET],"ietf-ipsec")
+AC_SUBST([TARGET],"ietf-i2nsf-ike")
 CFLAGS="-Wall -w  -O3 -fPIC"
 
 AC_CHECK_HEADERS(crypt.h, [], [AC_ERROR([A working crypt is required])])
