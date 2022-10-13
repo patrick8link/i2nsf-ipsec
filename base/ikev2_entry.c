@@ -369,6 +369,8 @@ int readIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
             else if (0 == strcmp("/local-pad-entry-name",name)) {
                 if (NULL != strstr(value->xpath,"local")) {
                    strcpy(local,value->data.string_val);
+                   strcpy(local_identifier,value->data.string_val);
+                    DBG("local identifier %s", local_identifier);
                    char select_xpath[200];
                    sr_val_t *values = NULL;
                    size_t count = 0;
@@ -382,6 +384,8 @@ int readIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
             else if (0 == strcmp("/remote-pad-entry-name",name)) {
                 if (NULL != strstr(value->xpath,"remote")) {
                     strcpy(remote,value->data.string_val);
+                    strcpy(remote_identifier,value->data.string_val);
+                    DBG("remote identifier %s", remote_identifier);
                     char select_xpath[200];
                     sr_val_t *values = NULL;
                     size_t count = 0;
