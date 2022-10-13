@@ -23,6 +23,7 @@ $(TARGET) : $(OBJ)
 
 install:
 	sysrepoctl --install --yang=./$(TARGET).yang --owner=root:root --permissions=666
+	sysrepoctl --install --yang=./ietf-i2nsf-ikec.yang --owner=root:root --permissions=666
 
 .PHONY: uninstall
 
