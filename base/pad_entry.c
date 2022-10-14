@@ -27,6 +27,20 @@ char auth_protocol[50];
 char auth_method[40];
 char ssecret[40];
 
+void remove_all_chars(char* str, char c) {
+    char *pr = str, *pw = str;
+    while (*pr) {
+        *pw = *pr++;
+        pw += (*pw != c);
+    }
+    *pw = '\0';
+}
+
+
+void strupp(char* beg)
+{
+    while (*beg = toupper(*beg)) beg++;
+}
 
 int hex_to_int(char c){
         int first = c / 16 - 3;
@@ -41,7 +55,6 @@ int hex_to_ascii(char c, char d){
         int low = hex_to_int(d);
         return high+low;
 }
-
 
 pad_entry_node* getPADEntry(char* remote_ts){
 
@@ -141,18 +154,27 @@ int readPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
 				}
             }
 			else if (0 == strcmp("/secret",name)) {
-				int length = strlen(value->data.string_val);
+				char *data;
+				int x; 
+				data = value->data.string_val;
+
+				strupp(data);
+				remove_all_chars(data, ':');
+				char res[500]="";
+				int length = strlen(data);
 				int i;
-				char buf = 0;
+				char buf=0;
 				for(i = 0; i < length; i++){
-						if(i % 2 != 0){
-								printf("%c", hex_to_ascii(buf, value->data.string_val[i]));
-						}else{
-								buf = value->data.string_val[i];
-						}
+					if(i % 2 != 0){
+						x = hex_to_ascii(buf, data[i]);
+						DBG("%c",x);
+						char c = (char)x;
+						strncat(res,&c,1);
+					}else{
+						buf = value->data.string_val[i];
+					}
 				}
-                strcpy(ssecret, buf);
-				DBG("ssecret: %s",ssecret)
+				DBG("ssecret: %s",res);
             }
 
         } else break;
