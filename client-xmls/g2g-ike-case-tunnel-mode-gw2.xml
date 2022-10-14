@@ -2,30 +2,30 @@
    xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
      <pad>
        <pad-entry>
-         <name>nsf_h1_pad</name>
+         <name>Host1</name>
          <ipv4-address>192.168.123.100</ipv4-address>
          <auth-protocol>ikev2</auth-protocol>
          <peer-authentication>
             <auth-method>pre-shared</auth-method>
             <pre-shared>
-                <secret>AB</secret>
+                <secret>73:65:63:72:65:74:6F:5F:63:6F:6D:70:61:72:74:69:64:6F</secret>
             </pre-shared>
          </peer-authentication>
        </pad-entry>
        <pad-entry>
-         <name>nsf_h2_pad</name>
+         <name>Host2</name>
          <ipv4-address>192.168.123.200</ipv4-address>
          <auth-protocol>ikev2</auth-protocol>
          <peer-authentication>
             <auth-method>pre-shared</auth-method>
             <pre-shared>
-                <secret>AB</secret>
+                <secret>73:65:63:72:65:74:6F:5F:63:6F:6D:70:61:72:74:69:64:6F</secret>
             </pre-shared>
          </peer-authentication>
        </pad-entry>
      </pad>
      <conn-entry>
-        <name>nsf_h1-nsf_h2</name>
+        <name>gateway2</name>
         <autostartup>start</autostartup>
         <version>ikev2</version>
         <initial-contact>false</initial-contact>
@@ -50,14 +50,14 @@
            15
         </half-open-ike-sa-cookie-threshold>
         <local>
-            <local-pad-entry-name>nsf_h2_pad</local-pad-entry-name>
+            <local-pad-entry-name>Host2</local-pad-entry-name>
         </local>
         <remote>
-            <remote-pad-entry-name>nsf_h1_pad</remote-pad-entry-name>
+            <remote-pad-entry-name>Host1</remote-pad-entry-name>
         </remote>
         <spd>
           <spd-entry>
-             <name>nsf_h1-nsf_h2</name>
+             <name>gateway2</name>
              <ipsec-policy-config>
                <anti-replay-window-size>64</anti-replay-window-size>
                <traffic-selector>

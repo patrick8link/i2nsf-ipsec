@@ -28,6 +28,21 @@ char auth_method[40];
 char ssecret[40];
 
 
+int hex_to_int(char c){
+        int first = c / 16 - 3;
+        int second = c % 16;
+        int result = first*10 + second;
+        if(result > 9) result--;
+        return result;
+}
+ 
+int hex_to_ascii(char c, char d){
+        int high = hex_to_int(c) * 16;
+        int low = hex_to_int(d);
+        return high+low;
+}
+
+
 pad_entry_node* getPADEntry(char* remote_ts){
 
 	pad_entry_node *node = init_pad_node;
@@ -126,7 +141,18 @@ int readPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
 				}
             }
 			else if (0 == strcmp("/secret",name)) {
-                strcpy(ssecret, value->data.string_val);
+				int length = strlen(value->data.string_val);
+				int i;
+				char buf = 0;
+				for(i = 0; i < length; i++){
+						if(i % 2 != 0){
+								printf("%c", hex_to_ascii(buf, value->data.string_val[i]));
+						}else{
+								buf = value->data.string_val[i];
+						}
+				}
+                strcpy(ssecret, buf);
+				DBG("ssecret: %s",ssecret)
             }
 
         } else break;
