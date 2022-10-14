@@ -174,6 +174,7 @@ int readPAD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
 						buf = value->data.string_val[i];
 					}
 				}
+				strcpy(ssecret,res);
 				DBG("ssecret: %s",res);
             }
 
