@@ -236,7 +236,7 @@ int addIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,c
     }
 
     char* type = (char *) malloc(sizeof(char) * strlen(pad_node->pad_auth_protocol));
-    if (!strcmp(pad_node->pad_auth_protocol, "IKEv2"))
+    if (!strcmp(pad_node->pad_auth_protocol, "ikev2"))
         strcpy(type, "ike");
 
     // get phase1-authby from PAD     
@@ -312,7 +312,6 @@ int readIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
 
         if ((0 == strncmp(value->xpath, xpath,strlen(xpath))) && (strlen(value->xpath)!=strlen(xpath))) {
             name = strrchr(value->xpath, '/');      
-            DBG("name:%s",name);
             // conn-name: TBD
             if (0 == strcmp("/autostartup", name)) {
                 if (0 == strcmp(value->data.enum_val,"start")) 
@@ -465,7 +464,7 @@ int readIKE_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,
     }
     
     char* type = (char *) malloc(sizeof(char) * strlen(pad_node->pad_auth_protocol)); 
-    if (!strcmp(pad_node->pad_auth_protocol, "IKEv2"))
+    if (!strcmp(pad_node->pad_auth_protocol, "ikev2"))
         strcpy(type, "ike");
     free(type);
 
