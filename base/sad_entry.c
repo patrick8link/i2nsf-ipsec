@@ -253,7 +253,7 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
 		        DBG("remote prefix: %s", dst);
 	        }
 
-            else if (0 == strcmp("/security-protocol", name)) {
+            else if (0 == strcmp("/protocol-parameters", name)) {
                 if (!strcasecmp(value->data.string_val, "ESP")){
                     satype = SADB_SATYPE_ESP;
                 }
