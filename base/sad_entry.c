@@ -353,6 +353,7 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
 
             else if (0 == strcmp("/key", name)) {
                 char *data;
+                int x;
 	            if (NULL != strstr(value->xpath,"/ah-sa")) {
                     strcpy(data, value->data.string_val);
                     strupp(data);
