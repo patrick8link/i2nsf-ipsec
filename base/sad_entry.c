@@ -42,6 +42,38 @@ int lft_current_use_expires_seconds = 0;
 char address[30];
 sad_entry_node *init_sad_node = NULL;
 
+
+void remove_all_chars(char* str, char c) {
+    char *pr = str, *pw = str;
+    while (*pr) {
+        *pw = *pr++;
+        pw += (*pw != c);
+    }
+    *pw = '\0';
+}
+
+
+void strupp(char* beg)
+{
+    while (*beg = toupper(*beg)) beg++;
+}
+
+int hex_to_int(char c){
+        int first = c / 16 - 3;
+        int second = c % 16;
+        int result = first*10 + second;
+        if(result > 9) result--;
+        return result;
+}
+ 
+int hex_to_ascii(char c, char d){
+        int high = hex_to_int(c) * 16;
+        int low = hex_to_int(d);
+        return high+low;
+}
+
+
+
 sad_entry_node* createSADnode(){
 
     sad_entry_node *sad_node = (sad_entry_node*) malloc(sizeof(sad_entry_node));
@@ -320,16 +352,68 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
             }
 
             else if (0 == strcmp("/key", name)) {
+                char *tmp_data;
 	            if (NULL != strstr(value->xpath,"/ah-sa")) {
-                   	strcpy(auth_key,value->data.string_val);
+                    strcpy(tmp_data, value->data.string_val);
+                    strupp(tmp_data);
+                    remove_all_chars(tmp_data, ':');
+                    char res[500];
+                    int length = strlen(data);
+                    int i;
+                        char buf = 0;
+                        for(i = 0; i < length; i++){
+					    if(i % 2 != 0){
+					    	x = hex_to_ascii(buf, data[i]);
+					    	DBG("%c",x);
+					    	char c = (char)x;
+					    	strncat(res,&c,1);
+					    }else{
+					    	buf = value->data.string_val[i];
+					    }
+				    }
+                   	strcpy(auth_key, res);
                     DBG ("auth key %s",auth_key);
 	            }
 	            if (NULL != strstr(value->xpath,"/esp-sa/encryption")) {
-		           strcpy(encrypt_key,value->data.string_val);
+                    strcpy(tmp_data, value->data.string_val);
+                    strupp(tmp_data);
+                    remove_all_chars(tmp_data, ':');
+                    char res[500];
+                    int length = strlen(data);
+                    int i;
+                        char buf = 0;
+                        for(i = 0; i < length; i++){
+					    if(i % 2 != 0){
+					    	x = hex_to_ascii(buf, data[i]);
+					    	DBG("%c",x);
+					    	char c = (char)x;
+					    	strncat(res,&c,1);
+					    }else{
+					    	buf = value->data.string_val[i];
+					    }
+				    }
+                    strcpy(encrypt_key, res);
                     DBG ("esp enc key %s",encrypt_key);
             	}
 	            if (NULL != strstr(value->xpath,"/esp-sa/integrity")) {
-                    strcpy(auth_key,value->data.string_val);
+                    strcpy(tmp_data, value->data.string_val);
+                    strupp(tmp_data);
+                    remove_all_chars(tmp_data, ':');
+                    char res[500];
+                    int length = strlen(data);
+                    int i;
+                        char buf = 0;
+                        for(i = 0; i < length; i++){
+					    if(i % 2 != 0){
+					    	x = hex_to_ascii(buf, data[i]);
+					    	DBG("%c",x);
+					    	char c = (char)x;
+					    	strncat(res,&c,1);
+					    }else{
+					    	buf = value->data.string_val[i];
+					    }
+				    }
+                    strcpy(auth_key, res);
                     DBG ("esp auth key %s",auth_key);
                 }
             }

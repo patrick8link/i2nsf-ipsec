@@ -94,13 +94,13 @@
                   <!-- //ENCR_AES_CBC -->
                   <!-- Same as h1. Refer to h2h_ikeless_h1.xml for change in this section-->
                   <encryption-algorithm>3</encryption-algorithm>
-                  <key>01:23:45:67:89:AB:CE:DF</key>
-                  <iv>01:23:45:67:89:AB:CE:DF</iv>
+                  <key>65:63:72:5F:73:65:63:72:65:74</key>
+                  <iv>76:65:63:74:6f:72</iv>
                </encryption>
                <integrity>
                   <!-- //AUTH_HMAC_SHA1_96 -->
                   <integrity-algorithm>2</integrity-algorithm>
-                  <key>01:23:45:67:89:AB:CE:DF</key>
+                  <key>61:75:74:68</key>
                </integrity>
              </esp-sa>
          </ipsec-sa-config>
@@ -124,13 +124,13 @@
                  <encryption>
                     <!-- //ENCR_AES_CBC -->
                     <encryption-algorithm>3</encryption-algorithm>
-                    <key>01:23:45:67:89:AB:CE:DF</key>
-                    <iv>01:23:45:67:89:AB:CE:DF</iv>
+                    <key>65:63:72:5F:73:65:63:72:65:74</key>
+                    <iv>76:65:63:74:6f:72</iv>
                  </encryption>
                  <integrity>
                     <!-- //AUTH_HMAC_SHA1_96 -->
                     <integrity-algorithm>2</integrity-algorithm>
-                    <key>01:23:45:67:89:AB:CE:DF</key>
+                    <key>61:75:74:68</key>
                  </integrity>
                </esp-sa>
                <sa-lifetime-hard>
