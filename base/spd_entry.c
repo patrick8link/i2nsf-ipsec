@@ -291,9 +291,19 @@ int readSPD_entry(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpath,char 
 
                 name = strrchr(value->xpath, '/');
                 DBG("xpath SPD name: %s",name);
-                if (NULL != strstr(value->xpath,"/anti-replay-window-size")) {
-                    policy_dir = value->data.int32_val;
-                    DBG("anti-replay-window-size: %i",policy_dir);
+                if (NULL != strstr(value->xpath,"/direction")) {
+                    if (!strcasecmp(value->data.string_val, "OUTBOUND"))
+                        policy_dir =  IPSEC_DIR_OUTBOUND;
+                    else if (!strcasecmp(value->data.string_val, "INBOUND"))
+                        policy_dir = IPSEC_DIR_INBOUND;
+                    else if (!strcasecmp(value->data.string_val, "FORWARD"))
+                        policy_dir = IPSEC_DIR_FORWARD;
+                    else {
+                        rc = SR_ERR_VALIDATION_FAILED;    
+                        ERR("spd-entry Bad direction: %s", sr_strerror(rc));
+                        return rc;
+                    }
+                    DBG("direction: %i",policy_dir);
                 }
                 else if (NULL != strstr(value->xpath,"/traffic-selector")) {
                     if (getSelectorList_it(sess,it,xpath,oper,old_value,new_value)){
