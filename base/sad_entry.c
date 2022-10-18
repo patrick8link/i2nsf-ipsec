@@ -18,6 +18,7 @@
  */
 
 #include "sad_entry.h"
+#include "util.h"
 
 char src[20], dst[20], src_tunnel[20], dst_tunnel[20], protocol[4], encrypt_key[30],auth_key[30];
 int protocol_next_layer, srcport, dstport, satype, encrypt_alg, auth_alg,iv, mode, spi;
@@ -41,36 +42,6 @@ int lft_current_use_expires_seconds = 0;
 
 char address[30];
 sad_entry_node *init_sad_node = NULL;
-
-
-void remove_all_chars(char* str, char c) {
-    char *pr = str, *pw = str;
-    while (*pr) {
-        *pw = *pr++;
-        pw += (*pw != c);
-    }
-    *pw = '\0';
-}
-
-
-void strupp(char* beg)
-{
-    while (*beg = toupper(*beg)) beg++;
-}
-
-int hex_to_int(char c){
-        int first = c / 16 - 3;
-        int second = c % 16;
-        int result = first*10 + second;
-        if(result > 9) result--;
-        return result;
-}
- 
-int hex_to_ascii(char c, char d){
-        int high = hex_to_int(c) * 16;
-        int low = hex_to_int(d);
-        return high+low;
-}
 
 
 
