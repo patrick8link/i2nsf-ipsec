@@ -92,7 +92,8 @@
              <esp-sa>
                <encryption>
                   <!-- //ENCR_AES_CBC -->
-                  <encryption-algorithm>12</encryption-algorithm>
+                  <!-- Same as h1. Refer to h2h_ikeless_h1.xml for change in this section-->
+                  <encryption-algorithm>3</encryption-algorithm>
                   <key>01:23:45:67:89:AB:CE:DF</key>
                   <iv>01:23:45:67:89:AB:CE:DF</iv>
                </encryption>

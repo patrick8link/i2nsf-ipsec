@@ -303,7 +303,15 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
             }
 
             else if (0 == strcmp("/integrity-algorithm", name)) {
-                auth_alg = getAuthAlg(value->data.string_val);
+                // auth_alg = getAuthAlg(value->data.string_val);
+                if(value->data.uint16_val == 6){
+                    auth_alg = getAuthAlg("hmac-md5-128");
+                }else if(value->data.uint16_val == 2){
+                    auth_alg = getAuthAlg("hmac-sha1-96")
+                }else if(value->data.uint16_val == 7){
+                    auth_alg = getAuthAlg("hamc-sha1-160")
+                }
+
                 DBG ("auth alg %i",auth_alg);
             }
 
@@ -323,7 +331,10 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
             }
             else if (0 == strcmp("/encryption-algorithm", name)) {
                 if (NULL != strstr(value->xpath,"/esp-sa")) {
-        	        encrypt_alg = getEncryptAlg(value->data.string_val);
+        	        // encrypt_alg = getEncryptAlg(value->data.string_val);
+                    if(value->data.uint16_val == 3){ // 3 == 3des + getEncryptAlg only support 3des
+                        encrypt_alg = getEncryptAlg("3des");
+                    }
                     DBG ("encrypt alg %i",encrypt_alg);
                 }
             }
