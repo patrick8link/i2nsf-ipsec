@@ -332,7 +332,7 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
             else if (0 == strcmp("/encryption-algorithm", name)) {
                 if (NULL != strstr(value->xpath,"/esp-sa")) {
         	        // encrypt_alg = getEncryptAlg(value->data.string_val);
-                    DBG("!!!!!!!!!!!!!!!!!!!!!!!!!!!%d!!!!!!!!!!!!!!!!!!!!!!!!!!!", value->data.uint16_val);
+                    //tmp
                     if(value->data.uint16_val == 3){ // 3 == 3des + getEncryptAlg only support 3des
                         encrypt_alg = getEncryptAlg("3des");
                     }
