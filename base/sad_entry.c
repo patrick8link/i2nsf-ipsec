@@ -281,7 +281,7 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
                 DBG("mode: %i",mode);
             }
 
-            else if (0 == strcmp("/anti-replay-window", name)) {
+            else if (0 == strcmp("/anti-replay-window-size", name)) {
                 replay = value->data.uint16_val;
                 DBG("anti-replay-window found: %i", replay);
             }
