@@ -323,10 +323,10 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
             }
 
             else if (0 == strcmp("/key", name)) {
-                char *data;
-                int x;
 	            if (NULL != strstr(value->xpath,"/ah-sa")) {
-                    strcpy(data, value->data.string_val);
+                    char *data;
+                    int x;
+                    data = value->data.string_val;
                     strupp(data);
                     remove_all_chars(data, ':');
                     char res[500];
@@ -347,7 +347,9 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
                     DBG ("auth key %s",auth_key);
 	            }
 	            if (NULL != strstr(value->xpath,"/esp-sa/encryption")) {
-                    strcpy(data, value->data.string_val);
+                    char *data;
+                    int x;
+                    data = value->data.string_val;
                     strupp(data);
                     remove_all_chars(data, ':');
                     char res[500];
@@ -368,7 +370,9 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
                     DBG ("esp enc key %s",encrypt_key);
             	}
 	            if (NULL != strstr(value->xpath,"/esp-sa/integrity")) {
-                    strcpy(data, value->data.string_val);
+                    char *data;
+                    int x;
+                    data = value->data.string_val;
                     strupp(data);
                     remove_all_chars(data, ':');
                     char res[500];
