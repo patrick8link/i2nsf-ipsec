@@ -1,14 +1,15 @@
 # NETCONF/YANG module for IPsec SAs management (cfgipsec2)
 
 
-IETF Working Draft at [https://tools.ietf.org/html/draft-ietf-i2nsf-sdn-ipsec-flow-protection]. 
+IETF Working Draft at [https://datatracker.ietf.org/doc/html/rfc9061]. 
 
 This NETCONF/YANG module is based on [Netopeer2](https://github.com/CESNET/Netopeer2).
 
-You can easily test an example scenario with Docker compose at: [https://gitlab.atica.um.es/gabilm.um.es/sysrepo-netopeer2-cfgipsec2]
+You can easily test an example scenario with Docker compose at: [https://github.com/patrick8link/docker-i2nsf-ipsec]
 
+## Original Contributors
 
-## Contributors
+This work updates the original work [https://gitlab.atica.um.es/gabilm.um.es/cfgipsec2/tree/master] to follow RFC9061.
 
 ### Professors:
 
