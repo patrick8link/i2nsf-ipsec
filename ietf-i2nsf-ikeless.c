@@ -134,7 +134,7 @@ main(int argc, char **argv)
     DBG("Subscribing to entries");
     /*subscribe for changes in running config */
 
-    xpath = "/ietf-i2nsf-ikeless:ipsec-ikeless/spd/spd-entry"  //SPD ENTRY
+    xpath = "/ietf-i2nsf-ikeless:ipsec-ikeless/spd/spd-entry";  //SPD ENTRY
     rc = sr_subtree_change_subscribe(session, xpath, spd_entry_change_cb, NULL,
             0, SR_SUBSCR_DEFAULT, &subscription);
     if (SR_ERR_OK != rc) {
