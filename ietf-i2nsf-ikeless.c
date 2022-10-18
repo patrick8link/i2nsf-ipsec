@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//IKELESS VERSION
 #include <unistd.h>
 
 #include "base/utils.h"
@@ -50,21 +51,12 @@ main(int argc, char **argv)
 
     // Get options
     int foreground = false;
-    feature_case_value = CASE2_IPSEC;
 
     int c;
-    while ( ( c = getopt ( argc, argv, "f:c:v:h" ) ) != -1 ) {
+    while ( ( c = getopt ( argc, argv, "f:v:h" ) ) != -1 ) {
         switch ( c ) {
             case 'f':
                 foreground = true; // TBD
-                break;
-            case 'c':
-                if (strcmp(optarg,"case1") != 0 && strcmp(optarg,"case2") != 0) {
-                    printf("feature not valid: %s\n",optarg);
-                    exit(EXIT_FAILURE);
-                } else if (strcmp(optarg, "case1") == 0) {
-                    feature_case_value = CASE1_IPSECIKE;
-                } // else, take dafult values (case2)
                 break;
             case 'v':
                 if (strcmp(optarg,"0") != 0 && strcmp(optarg,"1") != 0 && strcmp(optarg,"2") != 0) {
@@ -141,41 +133,53 @@ main(int argc, char **argv)
 
     DBG("Subscribing to entries");
     /*subscribe for changes in running config */
-		
-    //first check if VICI is running
-    rc = checkIKE_connection();
-    if (SR_ERR_OK != rc) {
-        ERR( "VICI not running for case 1: %s", sr_strerror(rc));
-        ERR( "Try run ipsec restart");
-        goto cleanup;
-    }
 
-    xpath = "/ietf-i2nsf-ike:ipsec-ike/conn-entry";
-    rc = sr_subtree_change_subscribe(session,xpath, ike_entry_change_cb, NULL,
+    xpath = "/ietf-i2nsf-ikeless:ipsec-ikeless/spd/spd-entry"  //SPD ENTRY
+    rc = sr_subtree_change_subscribe(session, xpath, spd_entry_change_cb, NULL,
             0, SR_SUBSCR_DEFAULT, &subscription);
     if (SR_ERR_OK != rc) {
-        ERR( " sr_module_change_subscribe ike: %s", sr_strerror(rc));
-        ERR( "Try to reinstall the ietf-ipsec module running make uninstall then make install.");
+        ERR( " sr_module_change_subscribe SPD: %s", sr_strerror(rc));
         goto cleanup;
     }
 
-    xpath = "/ietf-i2nsf-ike:ipsec-ike/pad/pad-entry";
-    rc = sr_subtree_change_subscribe(session,xpath, pad_entry_change_cb, NULL,
-            1, SR_SUBSCR_CTX_REUSE, &subscription);
+    xpath = "/ietf-i2nsf-ikeless:ipsec-ikeless/sad/sad-entry";  //SAD ENTRY
+    rc = sr_subtree_change_subscribe(session, xpath, sad_entry_change_cb, NULL,
+            0, SR_SUBSCR_CTX_REUSE, &subscription);
     if (SR_ERR_OK != rc) {
-        ERR( " sr_module_change_subscribe pad: %s", sr_strerror(rc));
+        ERR( " sr_module_change_subscribe SAD: %s", sr_strerror(rc));
         goto cleanup;
     }
 
-    xpath = "/ietf-i2nsf-ike:ipsec-ike/conn-entry/spd/spd-entry";
-    rc = sr_subtree_change_subscribe(session,xpath, spd_entry_change_cb, NULL,
-            2, SR_SUBSCR_CTX_REUSE, &subscription);
-    if (SR_ERR_OK != rc) {
-        ERR( " sr_module_change_subscribe spd: %s", sr_strerror(rc));
-        goto cleanup;
-    }  
+    /*
+    !!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!  using previous yang datamodel (should change)
+    !!!!!!!!!!!!!!!!!!!  SADB_REGISTER
     
+    */
 
+    xpath = "/ietf-ipsec:sadb_register";
+	rc = sr_rpc_subscribe(session, xpath, rpc_sadb_register_cb, (void *)session, SR_SUBSCR_CTX_REUSE, &subscription);
+	if (SR_ERR_OK != rc) {
+        ERR( " sr_module_change_subscribe sad_register: %s", sr_strerror(rc));
+        goto cleanup;
+    }
+    DBG("Executing RPC register ESP caller:");
+    rc = rpc_register_caller(session, SADB_SATYPE_ESP);
+
+
+    xpath = "/ietf-i2nsf-ikeless:ipsec-ikeless/sad/sad-entry/ipsec-sa-state/sa-lifetime-current";
+	rc = sr_dp_get_items_subscribe(session, xpath, sad_lifetime_current_cb, NULL, SR_SUBSCR_CTX_REUSE, &subscription);    
+    if (SR_ERR_OK != rc) {
+        ERR( " sr_dp_get_items_subscribe sad-lifetime-current: %s", sr_strerror(rc));
+        goto cleanup;
+    } //spd does not have lifetime-current
+
+    xpath = "/ietf-i2nsf-ikeless:ipsec-ikeless/sad/sad-entry/ipsec-sa-state/replay-stats";
+	rc = sr_dp_get_items_subscribe(session, xpath, sad_stats_cb, NULL, SR_SUBSCR_CTX_REUSE, &subscription);    
+    if (SR_ERR_OK != rc) {
+        ERR( " sr_dp_get_items_subscribe sad-stats: %s", sr_strerror(rc));
+        goto cleanup;
+    }
  
     signal(SIGINT, sigint_handler);
     signal(SIGPIPE, SIG_IGN);
