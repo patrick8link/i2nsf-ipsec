@@ -216,18 +216,20 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
 
         if ((0 == strncmp(value->xpath, xpath,strlen(xpath))) && (strlen(value->xpath)!=strlen(xpath))) {
 	        name = strrchr(value->xpath, '/');
-            if (0 == strcmp("/next-layer-protocol", name)) {
+            if (0 == strcmp("/inner-protocol", name)) {
                 if (!strcasecmp(value->data.string_val, "TCP"))
                         protocol_next_layer =  IPSEC_NLP_TCP;
                 else if (!strcasecmp(value->data.string_val, "UDP"))
                         protocol_next_layer = IPSEC_NLP_UDP;
                 else if (!strcasecmp(value->data.string_val, "SCTP"))
                         protocol_next_layer = IPSEC_NLP_SCTP;
+                else if (!strcasecmp(value->data.string_val, "ANY"))//Currently treat any as tcp
+                        protocol_next_layer =  IPSEC_NLP_TCP;
                 else {
                         ERR("spd-entry Bad next-layer-protocol: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
                         return SR_ERR_VALIDATION_FAILED;
                 }
-                DBG("next-layer-protocol: %i",protocol_next_layer);
+                DBG("inner-protocol: %i",protocol_next_layer);
             }
 
             else if (0 == strncmp("/start", name,strlen("/start"))) {
