@@ -18,7 +18,7 @@
  */
 
 #include "sad_entry.h"
-#include "util.h"
+#include "utils.h"
 
 char src[20], dst[20], src_tunnel[20], dst_tunnel[20], protocol[4], encrypt_key[30],auth_key[30];
 int protocol_next_layer, srcport, dstport, satype, encrypt_alg, auth_alg,iv, mode, spi;
