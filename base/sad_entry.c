@@ -233,15 +233,7 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
             }
 
             else if (0 == strncmp("/start", name,strlen("/start"))) {
-                if (NULL != strstr(value->xpath,"/local-addresses")) {
-                    strcpy(src, value->data.string_val);
-                    DBG("local-address start: %s",src);
-                }
-                else if (NULL != strstr(value->xpath,"/remote-addresses")) {
-                    strcpy(dst, value->data.string_val);
-                    DBG("remote-address start: %s",dst);
-                }
-                else if (NULL != strstr(value->xpath,"/local-ports")) {
+                if (NULL != strstr(value->xpath,"/local-ports")) {
                     srcport = value->data.int64_val;
                     DBG("local-port start: %i",srcport);
                 }
@@ -250,6 +242,16 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
                     DBG("remote-port start: %i",dstport);
                 }
             }
+
+            else if (0 == strncmp("/local-prefix", name, strlen("/local-prefix"))){
+		        strcpy(src, value->data.string_val);
+		        DBG("local prefix: %s", src);
+	        }
+
+	        else if(0 == strncmp("/remote-prefix", name, strlen("/remote-prefix"))){
+		        strcpy(dst, value->data.string_val);
+		        DBG("remote prefix: %s", dst);
+	        }
 
             else if (0 == strcmp("/security-protocol", name)) {
                 if (!strcasecmp(value->data.string_val, "ESP")){
