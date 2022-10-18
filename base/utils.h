@@ -128,8 +128,8 @@ void key_print(struct sadb_ext *ext);
 #define UTIL_H
 void remove_all_chars(char*, char);
 void strupp(char*);
-void hex_to_int(char);
-void hex_to_ascii(char, char);
+int hex_to_int(char);
+int hex_to_ascii(char, char);
 
 #endif
 
