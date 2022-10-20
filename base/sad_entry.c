@@ -44,7 +44,7 @@ union tmp_sr_data_u{
     char* string_val;
     int64_t int64_val;
 };
-typedef tmp_sr_data_u tmp_sr_data_t
+typedef tmp_sr_data_u tmp_sr_data_t;
 
 
 char address[30];
