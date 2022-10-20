@@ -99,8 +99,8 @@
                   <iv>76:65:63:74:6f:72</iv>
                </encryption>
                <integrity>
-                  <!-- //AUTH_HMAC_SHA1_96 -->
-                  <integrity-algorithm>2</integrity-algorithm>
+                  <!-- //AUTH_HMAC_SHA1_96 (2) ==> changed to AUTH_HMAC_MD5_128(6) -->
+                  <integrity-algorithm>6</integrity-algorithm>
                   <key>61:75:74:68</key>
                </integrity>
              </esp-sa>
@@ -130,7 +130,7 @@
                  </encryption>
                  <integrity>
                     <!-- //AUTH_HMAC_SHA1_96 -->
-                    <integrity-algorithm>2</integrity-algorithm>
+                    <integrity-algorithm>6</integrity-algorithm>
                     <key>61:75:74:68</key>
                  </integrity>
                </esp-sa>
