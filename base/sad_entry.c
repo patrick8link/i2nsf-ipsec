@@ -311,6 +311,7 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
 
             else if (0 == strcmp("/integrity-algorithm", name)) {
                 // auth_alg = getAuthAlg(value->data.string_val);
+                DBG("/integrity-algorithm: %d", value->data.uint16_val);
                 if(value->data.uint16_val == 6){
                     auth_alg = getAuthAlg("hmac-md5-128");
                 }else if(value->data.uint16_val == 2){
