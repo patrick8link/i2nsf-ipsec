@@ -42,7 +42,7 @@ int lft_current_use_expires_seconds = 0;
 
 union tmp_sr_data_u{
     char* string_val;
-    uint16_t uint16_val;
+    int64_t int64_val;
 };
 typedef tmp_sr_data_u tmp_sr_data_t
 
@@ -434,7 +434,7 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
 					    }
 				    }
                     strcpy(tmp->string_val, res);
-        	        iv = tmp->data.int64_val;
+        	        iv = tmp->int64_val;
                     DBG ("iv %i",iv);
             	}
             }
