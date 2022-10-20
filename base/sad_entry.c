@@ -413,7 +413,7 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
             }
             else if (0 == strcmp("/iv", name)) {
                 if (NULL != strstr(value->xpath,"/esp-sa")) {
-                    tmp_sr_data_t *tmp;
+                    tmp_sr_data_t tmp;
                     char *data;
                     int x;
                     data = value->data.string_val;
@@ -433,8 +433,8 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
 					    	buf = value->data.string_val[i];
 					    }
 				    }
-                    strcpy(tmp->string_val, res);
-        	        iv = tmp->int64_val;
+                    strcpy(tmp.string_val, res);
+        	        iv = tmp.int64_val;
                     DBG ("iv %i",iv);
             	}
             }
