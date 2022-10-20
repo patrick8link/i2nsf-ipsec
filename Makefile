@@ -18,6 +18,7 @@ OBJ = $(TARGET).o \ base/utils.o 	base/sysrepo_utils.o 	base/log.o 	base/spd_ent
 $(TARGET) : $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS) 
 	rm -f *.o base/*.o *~ core
+	
 
 .PHONY: install
 

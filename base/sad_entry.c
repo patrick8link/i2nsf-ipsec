@@ -220,12 +220,12 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
         if ((0 == strncmp(value->xpath, xpath,strlen(xpath))) && (strlen(value->xpath)!=strlen(xpath))) {
 	        name = strrchr(value->xpath, '/');
             if (0 == strcmp("/inner-protocol", name)) {
-                if (!strcasecmp(value->data.string_val, "TCP"))
-                        protocol_next_layer =  IPSEC_NLP_TCP;
-                else if (!strcasecmp(value->data.string_val, "UDP"))
-                        protocol_next_layer = IPSEC_NLP_UDP;
-                else if (!strcasecmp(value->data.string_val, "SCTP"))
-                        protocol_next_layer = IPSEC_NLP_SCTP;
+                if (value->data.uint8_val == 6)
+                    protocol_next_layer =  IPSEC_NLP_TCP;
+                else if (value->data.uint8_val == 17)
+                    protocol_next_layer = IPSEC_NLP_UDP;
+                else if (value->data.uint8_val == 132)
+                    protocol_next_layer = IPSEC_NLP_SCTP;
                 else if (!strcasecmp(value->data.string_val, "ANY"))//Currently treat any as tcp
                         protocol_next_layer =  IPSEC_NLP_TCP;
                 else {
