@@ -40,6 +40,13 @@ int lft_current_add_expires_seconds = 0;
 int lft_current_use_expires_seconds = 0;
 
 
+union tmp_sr_data_u{
+    char* string_val;
+    uint16_t uint16_val;
+};
+typedef tmp_sr_data_u tmp_sr_data_t
+
+
 char address[30];
 sad_entry_node *init_sad_node = NULL;
 
@@ -406,7 +413,28 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
             }
             else if (0 == strcmp("/iv", name)) {
                 if (NULL != strstr(value->xpath,"/esp-sa")) {
-        	        iv = value->data.int64_val;
+                    tmp_sr_data_t *tmp;
+                    char *data;
+                    int x;
+                    data = value->data.string_val;
+                    strupp(data);
+                    remove_all_chars(data, ':');
+                    char res[500];
+                    int length = strlen(data);
+                    int i;
+                        char buf = 0;
+                        for(i = 0; i < length; i++){
+					    if(i % 2 != 0){
+					    	x = hex_to_ascii(buf, data[i]);
+					    	DBG("%c",x);
+					    	char c = (char)x;
+					    	strncat(res,&c,1);
+					    }else{
+					    	buf = value->data.string_val[i];
+					    }
+				    }
+                    strcpy(tmp->string_val, res);
+        	        iv = tmp->data.int64_val;
                     DBG ("iv %i",iv);
             	}
             }
