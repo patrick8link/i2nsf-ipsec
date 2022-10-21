@@ -416,6 +416,7 @@ sad_entry_change_cb(sr_session_ctx_t *session, const char *sad_entry_xpath, sr_n
                         if (0 == strncmp(token_spi,name,l)) {
 
                             INFO("Add sad-entry %s",sr_val_to_str(new_value));
+                            memset(xpath, 0, strlen(xpath));
                             strncpy(xpath,new_value->xpath,strlen(new_value->xpath)-l);
                             
                             if (SR_ERR_OK == addSAD_entry(session,it,xpath,sr_val_to_str(new_value))) {
