@@ -8,9 +8,17 @@
         <reqid>1</reqid>
         <ipsec-policy-config>
            <traffic-selector>
-             <local-prefix>192.168.123.100/32</local-prefix>
-             <remote-prefix>192.168.123.200/32</remote-prefix>
-             <inner-protocol>any</inner-protocol>
+              <local-prefix>192.168.123.100/32</local-prefix>
+              <remote-prefix>192.168.123.200/32</remote-prefix>
+              <inner-protocol>any</inner-protocol>
+              <local-ports>
+                <start>0</start>
+                <end>0</end>
+              </local-ports>
+              <remote-ports>
+                <start>0</start>
+                <end>0</end>
+              </remote-ports>
            </traffic-selector>
            <processing-info>
               <action>protect</action>
@@ -46,6 +54,14 @@
               <local-prefix>192.168.123.200/32</local-prefix>
               <remote-prefix>192.168.123.100/32</remote-prefix>
               <inner-protocol>any</inner-protocol>
+              <local-ports>
+                <start>0</start>
+                <end>0</end>
+              </local-ports>
+              <remote-ports>
+                <start>0</start>
+                <end>0</end>
+              </remote-ports>
             </traffic-selector>
             <processing-info>
               <action>protect</action>
@@ -85,11 +101,19 @@
             <traffic-selector>
               <local-prefix>192.168.123.100/32</local-prefix>
               <remote-prefix>192.168.123.200/32</remote-prefix>
-                 <inner-protocol>any</inner-protocol>
-             </traffic-selector>
-             <protocol-parameters>esp</protocol-parameters>
-             <mode>transport</mode>
-             <esp-sa>
+              <inner-protocol>any</inner-protocol>
+              <local-ports>
+                <start>0</start>
+                <end>0</end>
+              </local-ports>
+              <remote-ports>
+                <start>0</start>
+                <end>0</end>
+              </remote-ports>
+            </traffic-selector>
+            <protocol-parameters>esp</protocol-parameters>
+            <mode>transport</mode>
+            <esp-sa>
                <encryption>
                   <!-- //ENCR_AES_CBC -->
                   <!-- Same as h1. Refer to h2h_ikeless_h1.xml for change in this section-->
@@ -114,9 +138,17 @@
               <seq-overflow>false</seq-overflow>
               <anti-replay-window-size>64</anti-replay-window-size>
               <traffic-selector>
-                 <local-prefix>192.168.123.200/32</local-prefix>
-                 <remote-prefix>192.168.123.100/32</remote-prefix>
-                 <inner-protocol>any</inner-protocol>
+                <local-prefix>192.168.123.200/32</local-prefix>
+                <remote-prefix>192.168.123.100/32</remote-prefix>
+                <inner-protocol>any</inner-protocol>
+                <local-ports>
+                  <start>0</start>
+                  <end>0</end>
+                </local-ports>
+                <remote-ports>
+                  <start>0</start>
+                  <end>0</end>
+                </remote-ports>
               </traffic-selector>
               <protocol-parameters>esp</protocol-parameters>
               <mode>transport</mode>

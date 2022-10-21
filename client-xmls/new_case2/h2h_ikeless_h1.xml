@@ -11,6 +11,14 @@
              <local-prefix>192.168.123.200/32</local-prefix>
              <remote-prefix>192.168.123.100/32</remote-prefix>
              <inner-protocol>any</inner-protocol>
+             <local-ports>
+                <start>0</start>
+                <end>0</end>
+              </local-ports>
+              <remote-ports>
+                <start>0</start>
+                <end>0</end>
+              </remote-ports>
            </traffic-selector>
            <processing-info>
               <action>protect</action>
@@ -46,6 +54,14 @@
               <local-prefix>192.168.123.100/32</local-prefix>
               <remote-prefix>192.168.123.200/32</remote-prefix>
               <inner-protocol>any</inner-protocol>
+              <local-ports>
+                <start>0</start>
+                <end>0</end>
+              </local-ports>
+              <remote-ports>
+                <start>0</start>
+                <end>0</end>
+              </remote-ports>
             </traffic-selector>
             <processing-info>
               <action>protect</action>
@@ -85,7 +101,15 @@
             <traffic-selector>
               <local-prefix>192.168.123.100/32</local-prefix>
               <remote-prefix>192.168.123.200/32</remote-prefix>
-                 <inner-protocol>any</inner-protocol>
+              <inner-protocol>any</inner-protocol>
+              <local-ports>
+                <start>0</start>
+                <end>0</end>
+              </local-ports>
+              <remote-ports>
+                <start>0</start>
+                <end>0</end>
+              </remote-ports>
              </traffic-selector>
              <protocol-parameters>esp</protocol-parameters>
              <mode>transport</mode>
@@ -115,9 +139,17 @@
               <seq-overflow>false</seq-overflow>
               <anti-replay-window-size>64</anti-replay-window-size>
               <traffic-selector>
-                 <local-prefix>192.168.123.200/32</local-prefix>
-                 <remote-prefix>192.168.123.100/32</remote-prefix>
-                 <inner-protocol>any</inner-protocol>
+                <local-prefix>192.168.123.200/32</local-prefix>
+                <remote-prefix>192.168.123.100/32</remote-prefix>
+                <inner-protocol>any</inner-protocol>
+                <local-ports>
+                  <start>0</start>
+                  <end>0</end>
+                </local-ports>
+                <remote-ports>
+                  <start>0</start>
+                  <end>0</end>
+                </remote-ports>
               </traffic-selector>
               <protocol-parameters>esp</protocol-parameters>
               <mode>transport</mode>
