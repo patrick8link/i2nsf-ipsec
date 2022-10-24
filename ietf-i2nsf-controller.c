@@ -19,12 +19,9 @@
 
 #include <unistd.h>
 
-#include "base/utils.h"
-#include "base/log.h"
-#include "base/spd_entry.h"
-#include "base/sad_entry.h"
-#include "base/sysrepo_utils.h"
-#include "base/pfkeyv2_entry.h"
+#include "control_base/utils.h"
+#include "control_base/log.h"
+#include "control_base/sysrepo_utils.h"
 
 #define VERSION "0.1"
 
@@ -100,7 +97,7 @@ main(int argc, char **argv)
     sr_subscription_ctx_t *subscription = NULL; 
 
     int rc = SR_ERR_OK;
-    char *module_name = "ietf-i2nsf-controller";
+    char *module_name = "ietf-i2nsf-ike";
 
     const char *xpath = "";	
     sr_schema_t *schemas = NULL;
@@ -138,17 +135,6 @@ main(int argc, char **argv)
 
     /* read startup config */
     //apply_current_startup_config(session, module_name); TBD
-
-    DBG("Subscribing to entries");
-    /*subscribe for changes in running config */
-		
-    //first check if VICI is running
-    rc = checkIKE_connection();
-    if (SR_ERR_OK != rc) {
-        ERR( "VICI not running for case 1: %s", sr_strerror(rc));
-        ERR( "Try run ipsec restart");
-        goto cleanup;
-    }
 
     xpath = "/ietf-i2nsf-ike:ipsec-ike/conn-entry";
     rc = sr_subtree_change_subscribe(session,xpath, ike_entry_change_cb, NULL,
