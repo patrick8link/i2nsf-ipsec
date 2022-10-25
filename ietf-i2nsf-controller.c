@@ -136,7 +136,7 @@ main(int argc, char **argv)
     /* read startup config */
     //apply_current_startup_config(session, module_name); TBD
 
-    xpath = "/ietf-i2nsf-ike:ipsec-ike/conn-entry";
+    xpath = "/ietf-i2nsf-ike:ipsec-ike";
     rc = sr_subtree_change_subscribe(session,xpath, ike_entry_change_cb, NULL,
             0, SR_SUBSCR_DEFAULT, &subscription);
     if (SR_ERR_OK != rc) {
@@ -144,24 +144,6 @@ main(int argc, char **argv)
         ERR( "Try to reinstall the ietf-ipsec module running make uninstall then make install.");
         goto cleanup;
     }
-
-    xpath = "/ietf-i2nsf-ike:ipsec-ike/pad/pad-entry";
-    rc = sr_subtree_change_subscribe(session,xpath, pad_entry_change_cb, NULL,
-            1, SR_SUBSCR_CTX_REUSE, &subscription);
-    if (SR_ERR_OK != rc) {
-        ERR( " sr_module_change_subscribe pad: %s", sr_strerror(rc));
-        goto cleanup;
-    }
-
-    xpath = "/ietf-i2nsf-ike:ipsec-ike/conn-entry/spd/spd-entry";
-    rc = sr_subtree_change_subscribe(session,xpath, spd_entry_change_cb, NULL,
-            2, SR_SUBSCR_CTX_REUSE, &subscription);
-    if (SR_ERR_OK != rc) {
-        ERR( " sr_module_change_subscribe spd: %s", sr_strerror(rc));
-        goto cleanup;
-    }  
-    
-
  
     signal(SIGINT, sigint_handler);
     signal(SIGPIPE, SIG_IGN);
