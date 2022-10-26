@@ -44,6 +44,7 @@ char current_host_name[50];
 
 char *entry_id;
 int key;
+char hostname[50];
 char ipv4_addr[30];
 char auth_protocol[50];
 char auth_method[40];
@@ -51,6 +52,7 @@ char ssecret[70];
 
 char *entry_id_2;
 int key_2;
+char hostname_2[50];
 char ipv4_addr_2[30];
 char auth_protocol_2[50];
 char auth_method_2[40];
@@ -90,6 +92,10 @@ ev_to_str(sr_notif_event_t ev) {
     }
 }
 
+void send_rpc_call(char* hostname){
+    system("python3.8 ./python/test/rpc2Gw1.py %s", hostname);
+}
+
 int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpath, char *ipsec_id){
     int rc = SR_ERR_OK;
     int ac = SR_ERR_OK;
@@ -113,7 +119,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         else value = old_value;
         
         name = strrchr(value->xpath, '/');
-        DBG("name = %s", name);
+        // DBG("name = %s", name);
 
         //IKE
         if(0 == strcmp("/autostartup", name)){
@@ -197,9 +203,11 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
 		else if (0 == strcmp("/ipv4-address",name)) {
             if(0 == strcmp("Host1", current_host_name)){
+                strcpy(hostname, current_host_name);
                 strcpy(ipv4_addr, value->data.string_val);
                 DBG("[PAD] ipv4-address: %s", ipv4_addr);    
             }else if(0 == strcmp("Host2", current_host_name)){
+                strcpy(hostname_2, current_host_name);
                 strcpy(ipv4_addr_2, value->data.string_val);
                 DBG("[PAD2] ipv4-address: %s", ipv4_addr_2);
             }else{
@@ -566,7 +574,8 @@ int ipsec_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath
             sr_free_val(new_value);
         }
         DBG(" ========== END OF CHANGES =======================================");
-        system("python3.8 ./python/test/rpc2Gw1.py");
+        send_rpc_call(hostname);
+        
     }
 cleanup:
 

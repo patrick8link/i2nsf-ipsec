@@ -1,7 +1,10 @@
 from ncclient import manager
+import sys
 
 HOST_CLIENT = "10.0.1.204"
 HOST_PORT = 830
+
+PAD_NAME_1 = sys.argv[1]
 
 with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", password="netconf", hostkey_verify=False) as m:
     c = m.get_config(source='running')
@@ -9,12 +12,12 @@ with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", passw
     # print(f'manager timeout: {m.timeout}')
     # print(f'manager session id: {m.session_id}')
     print(f'######################## SENDING RPC TO {HOST_CLIENT}:{HOST_PORT}########################')
-    conf = '''
+    conf = f'''
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
     <ipsec-ike xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-ike" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
     <pad>
         <pad-entry>
-            <name>Host1</name>
+            <name>{PAD_NAME_1}</name>
             <ipv4-address>192.168.123.100</ipv4-address>
             <auth-protocol>ikev2</auth-protocol>
             <peer-authentication>
