@@ -72,10 +72,10 @@ int ipsec_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath
     int l = strlen(token_ike);
     char xpath[MAX_PATH] = "";
 
-    DBG(" ========== IKE Notification  %s ============================================", ev_to_str(event));
+    DBG(" ========== IPSEC Notification  %s ============================================", ev_to_str(event));
     if (SR_EV_VERIFY == event) {
 
-        DBG("========= VERIFY: IKE-ENTRY HAS CHANGED, CURRENT RUNNING CONFIG: ==========");
+        DBG("========= VERIFY: IPSEC-ENTRY HAS CHANGED, CURRENT RUNNING CONFIG: ==========");
         rc = sr_get_changes_iter(session, ike_entry_xpath, &it);
         if(SR_ERR_OK != rc){
             ERR("Get changes iter failed for xpath %s: %s", ike_entry_xpath, sr_strerror(rc));
@@ -105,7 +105,7 @@ int ipsec_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath
     }
     else if (SR_EV_APPLY == event) {
 
-        DBG(" ========== APPLY: IKE CHANGES: =============================================");
+        DBG(" ========== APPLY: IPSEC CHANGES: =============================================");
         rc = sr_get_changes_iter(session, ike_entry_xpath, &it);
         if(SR_ERR_OK != rc){
             ERR("Get changes iter failed for xpath %s: %s", ike_entry_xpath, sr_strerror(rc));
@@ -118,6 +118,14 @@ int ipsec_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath
                     name = strrchr(new_value->xpath, '/');
                     if(0 == strncmp(token_ike, name, l)){
                         INFO("Add entry %s", sr_val_to_str(new_value));
+                        strncpy(xpath, new_value->xpath, strlen(new_value->xpath));
+                        if(!addIPSEC_conn_entry(session, it, xpath, sr_val_to_str(new_value))){
+                            INFO("ipsec-conn-entry added");
+                        }else{
+                            rc = SR_ERR_OPERATION_FAILED;
+                            ERR("Failed to add ipsec-conn-entry: %s", sr_strerror(rc));
+                            goto cleanup;
+                        }
                     }
                     break;
                 case SR_OP_DELETED:
