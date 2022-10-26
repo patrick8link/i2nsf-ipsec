@@ -194,25 +194,28 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
 
         //PAD
+        else if(0 == strcmp("/pad-entry", name)){
+            DBG("[PAD] found pad entry: %s", value->data.string_val);
+        }
         else if(0 == strcmp("/id_key", name)) {
             key = value->data.int64_val;
-        	DBG ("[PAD] %s id_keyt %i", conn_name1, key);
+        	DBG ("[PAD] id_keyt %i", key);
     	}
 
 		else if (0 == strcmp("/ipv4-address",name)) {
             strcpy(ipv4_addr, value->data.string_val);
-            DBG("[PAD] %s ipv4-address: %s", conn_name1, ipv4_addr);
+            DBG("[PAD] ipv4-address: %s", ipv4_addr);
         }
 
 		else if (0 == strcmp("/auth-protocol",name)) {
             strcpy(auth_protocol, value->data.string_val);
-            DBG("[PAD] %s auth_protocol: %s", conn_name1, auth_protocol);
+            DBG("[PAD] auth_protocol: %s", auth_protocol);
         }
 
 		else if (0 == strcmp("/auth-method",name)) {
 			if (0 == strcmp(value->data.string_val,"pre-shared")) {		
                 strcpy(auth_method, "psk");
-                DBG("[PAD] %s auth_method: %s", conn_name1, auth_method);
+                DBG("[PAD] auth_method: %s", auth_method);
 			} else {
 				ERR("Auth_method unsuppoted: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
 				return SR_ERR_VALIDATION_FAILED;
@@ -241,7 +244,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
                 }
             }
             strcpy(ssecret,res);
-            DBG("[PAD] %s ssecret: %s", conn_name1, res);
+            DBG("[PAD] ssecret: %s", res);
         }
 
 
