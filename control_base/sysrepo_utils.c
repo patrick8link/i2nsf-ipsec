@@ -99,7 +99,7 @@ void send_rpc_call(){
     hostname, ipv4_addr, auth_protocol, auth_method, ssecret,
     hostname_2, ipv4_addr_2, auth_protocol_2, auth_method_2, ssecret_2);
     system(cmd);
-    nc_connect_ssh("10.0.1.204", 830, NULL);
+    // nc_connect_ssh("10.0.1.204", 830, NULL);
 }
 
 int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpath, char *ipsec_id){
