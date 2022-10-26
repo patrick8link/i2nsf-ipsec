@@ -19,6 +19,15 @@ PAD_AUTHPROTOCOL_2 = sys.argv[8]
 PAD_AUTHMETHOD_2 = sys.argv[9]
 PAD_SECRET_2 = sys.argv[10]
 
+IKE_NAME = sys.argv[11]
+IKE_AUTORUN = sys.argv[12]
+IKE_VERSION = sys.argv[13]
+IKE_REKEY = sys.argv[14]
+IKE_REAUTH = sys.argv[15]
+IKE_OVERTIME = sys.argv[16]
+IKE_DHGROUP = sys.argv[17]
+IKE_LOCALPADNAME = sys.argv[18]
+IKE_REMOTEPADNAME = sys.argv[19]
 
 
 with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", password="netconf", hostkey_verify=False) as m:
@@ -55,17 +64,17 @@ with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", passw
         </pad-entry>
     </pad>
     <conn-entry>
-        <name>gateway1</name>
-        <autostartup>start</autostartup>
-        <version>ikev2</version>
+        <name>{IKE_NAME}</name>
+        <autostartup>{IKE_AUTORUN}</autostartup>
+        <version>{IKE_VERSION}</version>
         <initial-contact>false</initial-contact>
         <fragmentation><enabled>false</enabled></fragmentation>
         <ike-sa-lifetime-soft>
-           <rekey-time>30</rekey-time>
-           <reauth-time>60</reauth-time>
+           <rekey-time>{IKE_REKEY}</rekey-time>
+           <reauth-time>{IKE_REAUTH}</reauth-time>
         </ike-sa-lifetime-soft>
         <ike-sa-lifetime-hard>
-           <over-time>10</over-time>
+           <over-time>{IKE_OVERTIME}</over-time>
         </ike-sa-lifetime-hard>
         <!--AUTH_HMAC_SHA2_512_256-->
         <ike-sa-intr-alg>14</ike-sa-intr-alg>
@@ -74,16 +83,16 @@ with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", passw
            <id>1</id>
         </ike-sa-encr-alg>
         <!--8192-bit MODP Group-->
-        <dh-group>18</dh-group>
+        <dh-group>{IKE_DHGROUP}</dh-group>
         <half-open-ike-sa-timer>30</half-open-ike-sa-timer>
         <half-open-ike-sa-cookie-threshold>
            15
         </half-open-ike-sa-cookie-threshold>
         <local>
-            <local-pad-entry-name>Host1</local-pad-entry-name>
+            <local-pad-entry-name>{IKE_LOCALPADNAME}</local-pad-entry-name>
         </local>
         <remote>
-            <remote-pad-entry-name>Host2</remote-pad-entry-name>
+            <remote-pad-entry-name>{IKE_REMOTEPADNAME}</remote-pad-entry-name>
         </remote>
         <spd>
           <spd-entry>

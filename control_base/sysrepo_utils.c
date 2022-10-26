@@ -95,9 +95,10 @@ ev_to_str(sr_notif_event_t ev) {
 // Probably a better way to do this but thats a problem for another day.
 void send_rpc_call(){
     char cmd[500];
-    sprintf(cmd, "python3.8 ./python/test/rpc2Gw1.py %s %s %s %s %s %s %s %s %s %s", 
+    sprintf(cmd, "python3.8 ./python/test/rpc2Gw1.py %s %s %s %s %s %s %s %s %s %s %s %s %s %d %d %d %d %s %s", 
     hostname, ipv4_addr, auth_protocol, auth_method, ssecret,
-    hostname_2, ipv4_addr_2, auth_protocol_2, auth_method_2, ssecret_2);
+    hostname_2, ipv4_addr_2, auth_protocol_2, auth_method_2, ssecret_2,
+    conn_name1, autostartup, version, ike_sa_lifetime, ike_reauth_lifetime, ipsec_sa_lifetime, dh_group, local, remote);
     system(cmd);
     // nc_connect_ssh("10.0.1.204", 830, NULL);
 }
