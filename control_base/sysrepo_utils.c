@@ -347,19 +347,23 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
 
         if (0 == strcmp("/action", name)) {
-            DBG("action = %s, xpath = %s", value->data.string_val, value->xpath);
-            if (!strcasecmp(value->data.string_val, "protect"))
-                action_policy_type=IPSEC_POLICY_PROTECT;
-            else if (!strcasecmp(value->data.string_val, "bypass"))
-                action_policy_type=IPSEC_POLICY_BYPASS;
-            else if (!strcasecmp(value->data.string_val, "discard"))
-                action_policy_type=IPSEC_POLICY_DISCARD;
-            else {
-                rc = SR_ERR_VALIDATION_FAILED;
-                ERR("spd-entry Bad action: %s", sr_strerror(rc));
-                return rc;
+            
+            if(NULL != strstr(value->xpath, "/processing-info")){
+                DBG("action = %s, xpath = %s", value->data.string_val, value->xpath);
+                if (!strcasecmp(value->data.string_val, "protect"))
+                    action_policy_type=IPSEC_POLICY_PROTECT;
+                else if (!strcasecmp(value->data.string_val, "bypass"))
+                    action_policy_type=IPSEC_POLICY_BYPASS;
+                else if (!strcasecmp(value->data.string_val, "discard"))
+                    action_policy_type=IPSEC_POLICY_DISCARD;
+                else {
+                    rc = SR_ERR_VALIDATION_FAILED;
+                    ERR("spd-entry Bad action: %s", sr_strerror(rc));
+                    return rc;
+                }
+                DBG("action: %i",action_policy_type);
             }
-            DBG("action: %i",action_policy_type);
+
         }
         else if (0 == strcmp("/protocol-parameters", name)) {
             if (!strcasecmp(value->data.string_val, "esp")){
