@@ -57,12 +57,12 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
     }do{
         if(oper == SR_OP_CREATED) value = new_value;
         else value = old_value;
-
+        
         if((0 == strncmp(value->xpath, xpath, strlen(xpath))) && (strlen(value->xpath) != strlen(xpath))){
             name = strrchr(value->xpath, '/');
             DBG("name = %s, name");
         }else{
-            DBG("cant get name");
+            DBG("cant get name: value->xpath: %s, xpath: %s", value->xpath, xpath);
             break;  
         } 
 
