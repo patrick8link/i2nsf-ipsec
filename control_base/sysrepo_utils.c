@@ -59,8 +59,8 @@ char ssecret_2[70];
 
 //SPD
 char src[30], dst[30], src_remove[50], dst_remove[50],src_tunnel[50], dst_tunnel[50];
-char policy_dir[30], protocol_next_layer[50], satype[50], action_policy_type[50], mode[30];
-int policy_id, srcport, dstport, proto;
+char policy_dir[30], satype[50], action_policy_type[50], mode[30];
+int policy_id, srcport, dstport, proto, protocol_next_layer;
 int spd_lft_byte_hard = 0;
 int spd_lft_byte_soft = 0;
 int spd_lft_byte_current = 0;
@@ -277,7 +277,8 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         // }
         if (0 == strcmp("/inner-protocol", name)) {
             strcpy(protocol_next_layer, value->data.string_val);
-            DBG("[SPD][TRAFFIC-SELECTOR] inner-protocol: %s", protocol_next_layer); //This can be int and string?
+            protocol_next_layer = value->data.uint8_val;
+            DBG("[SPD][TRAFFIC-SELECTOR] inner-protocol: %i", protocol_next_layer); //This can be int and string?
             // if (value->data.uint8_val == 6)
             //     protocol_next_layer =  IPSEC_NLP_TCP;
             // else if (value->data.uint8_val == 17)
