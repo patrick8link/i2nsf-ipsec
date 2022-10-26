@@ -5,11 +5,8 @@ HOST_CLIENT = "10.0.1.204"
 HOST_PORT = 830
 
 PAD_NAME_1 = sys.argv[1]
-print(f"PAD_NAME_1 = {sys.argv[1]}")
 PAD_IP4ADDR_1 = sys.argv[2]
-print(f"PAD_IP4ADDR_1 = {sys.argv[2]}")
 PAD_AUTHPROTOCOL_1 = sys.argv[3]
-print(f"PAD_AUTHPROTOCOL_1 = {sys.argv[3]}")
 PAD_AUTHMETHOD_1 = sys.argv[4]
 PAD_SECRET_1 = sys.argv[5]
 
