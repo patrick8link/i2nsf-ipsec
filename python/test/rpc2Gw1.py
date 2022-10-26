@@ -1,11 +1,14 @@
 from ncclient import manager
 
-with manager.connect(host="10.0.1.204", port=830, username="netconf", password="netconf", hostkey_verify=False) as m:
+HOST_CLIENT = "10.0.1.204"
+HOST_PORT = 830
+
+with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", password="netconf", hostkey_verify=False) as m:
     c = m.get_config(source='running')
     # print(f'is manager connected?:  {m.connected}')
     # print(f'manager timeout: {m.timeout}')
     # print(f'manager session id: {m.session_id}')
-    print(f'######################## SENDING RPC TO {host}:{port}########################')
+    print(f'######################## SENDING RPC TO {HOST_CLIENT}:{HOST_PORT}########################')
     conf = '''
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
     <ipsec-ike xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-ike" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
