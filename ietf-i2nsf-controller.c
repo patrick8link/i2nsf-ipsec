@@ -137,7 +137,7 @@ main(int argc, char **argv)
     //apply_current_startup_config(session, module_name); TBD
 
     xpath = "/ietf-i2nsf-ike:ipsec-ike";
-    rc = sr_subtree_change_subscribe(session,xpath, ike_entry_change_cb, NULL,
+    rc = sr_subtree_change_subscribe(session,xpath, ipsec_entry_change_cb, NULL,
             0, SR_SUBSCR_DEFAULT, &subscription);
     if (SR_ERR_OK != rc) {
         ERR( " sr_module_change_subscribe ike: %s", sr_strerror(rc));
