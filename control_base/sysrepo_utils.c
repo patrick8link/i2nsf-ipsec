@@ -93,7 +93,9 @@ ev_to_str(sr_notif_event_t ev) {
 }
 
 void send_rpc_call(char* hostname){
-    system("python3.8 ./python/test/rpc2Gw1.py %s", hostname);
+    char cmd[128];
+    sprintf(cmd, "python3.8 ./python/test/rpc2Gw1.py %s", hostname)
+    system(cmd);
 }
 
 int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpath, char *ipsec_id){
