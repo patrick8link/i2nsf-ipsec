@@ -276,7 +276,6 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         //     // }
         // }
         if (0 == strcmp("/inner-protocol", name)) {
-            strcpy(protocol_next_layer, value->data.string_val);
             protocol_next_layer = value->data.uint8_val;
             DBG("[SPD][TRAFFIC-SELECTOR] inner-protocol: %i", protocol_next_layer); //This can be int and string?
             // if (value->data.uint8_val == 6)
