@@ -94,7 +94,7 @@ ev_to_str(sr_notif_event_t ev) {
 
 void send_rpc_call(char* hostname){
     char cmd[128];
-    sprintf(cmd, "python3.8 ./python/test/rpc2Gw1.py %s", hostname)
+    sprintf(cmd, "python3.8 ./python/test/rpc2Gw1.py %s", hostname);
     system(cmd);
 }
 
