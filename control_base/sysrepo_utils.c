@@ -114,7 +114,11 @@ int ipsec_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath
         while(SR_ERR_OK == sr_get_change_next(session, it, &oper, &old_value, &new_value)){
             switch(oper){
                 case SR_OP_CREATED:
-                    DBG("<SR_OP_CREATED> ==> %s", new_value->xpath);
+                    DBG("<SR_OP_CREATED> ==> %s");
+                    name = strrchr(new_value->xpath, '/');
+                    if(0 == strncmp(token_ike, name, l)){
+                        INFO("Add entry %s", sr_val_to_str(new_value));
+                    }
                     break;
                 case SR_OP_DELETED:
                     DBG("<SR_OP_DELETED");
@@ -130,8 +134,8 @@ int ipsec_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath
             sr_free_val(new_value);
         }
         DBG(" ========== END OF CHANGES =======================================");
+        system("python3.8 ./python/test/rpc2Gw1.py");
     }
-    system("python3.8 ./python/test/rpc2Gw1.py");
 cleanup:
 
     sr_free_change_iter(it);
