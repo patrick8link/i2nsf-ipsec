@@ -1,6 +1,6 @@
 from ncclient import manager
 
-with manager.connect(host="10.0.1.200", port=830, username="netconf", password="netconf", hostkey_verify=False) as m:
+with manager.connect(host="172.24.4.100", port=830, username="netconf", password="netconf", hostkey_verify=False) as m:
     c = m.get_config(source='running')
     print(f'is manager connected?:  {m.connected}')
     print(f'manager timeout: {m.timeout}')
