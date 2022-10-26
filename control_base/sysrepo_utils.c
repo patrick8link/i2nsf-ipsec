@@ -195,7 +195,10 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
         //PAD
         else if(0 == strcmp("/name", name)){
-            DBG("[PAD] found pad entry under %s: %s", value->xpath, value->data.string_val);
+            if(NULL != strstr(value->xpath, "/pad")){
+                DBG("[PAD] found pad entry: %s",  value->data.string_val);
+            }
+            DBG("This is found but not part of PAD");
             
         }
         else if(0 == strcmp("/id_key", name)) {
