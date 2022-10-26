@@ -116,18 +116,11 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
         //IKE
         if(0 == strcmp("/autostartup", name)){
-            // if(0 == strcmp(value->data.enum_val, "start"))
-            //     strcpy(autostartup, "true");
-            // else 
-            //     strcpy(autostartup, "false");
             strcpy(autostartup, value->data.enum_val);
             DBG("[IKE] autostartup: %s", autostartup);
         }
 
         else if(0 == strcmp("/version", name)){
-            // if(0 == strcmp(value->data.string_val, "ikev2")){
-            //     strcpy(version, "2");
-            // }
             strcpy(version, value->data.string_val);
             DBG("[IKE] version %s", version);
         }
@@ -154,17 +147,6 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
         else if (0 == strcmp("/local-pad-entry-name",name)) {
             if (NULL != strstr(value->xpath,"local")) {
-                // strcpy(local,value->data.string_val);
-                // strcpy(local_identifier,value->data.string_val);
-                // DBG("[IKE] local identifier %s", local_identifier);
-                // char select_xpath[200];
-                // sr_val_t *values = NULL;
-                // size_t count = 0;
-                // snprintf(select_xpath, 200, "/ietf-i2nsf-ike:ipsec-ike/pad/pad-entry[name='%s']/ipv4-address",local);
-                // ac = sr_get_items(sess, select_xpath, &values, &count);
-                // sr_print_val(values);
-                // strcpy(local_addrs,values->data.string_val);
-                // DBG("[IKE] local ipv4 %s", local_addrs);
                 strcpy(local, value->data.string_val);
                 DBG("[IKE] local pad entry name: %s", local);
             }
@@ -172,17 +154,6 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
         else if (0 == strcmp("/remote-pad-entry-name",name)) {
             if (NULL != strstr(value->xpath,"remote")) {
-                // strcpy(remote,value->data.string_val);
-                // strcpy(remote_identifier,value->data.string_val);
-                // DBG("[IKE] remote identifier %s", remote_identifier);
-                // char select_xpath[200];
-                // sr_val_t *values = NULL;
-                // size_t count = 0;
-                // snprintf(select_xpath, 200, "/ietf-i2nsf-ike:ipsec-ike/pad/pad-entry[name='%s']/ipv4-address",remote);
-                // ac = sr_get_items(sess, select_xpath, &values, &count);
-                // sr_print_val(values);
-                // strcpy(remote_addrs,values->data.string_val);
-                // DBG("[IKE] remote ipv4 %s", remote_addrs);
                 strcpy(remote, value->data.string_val);
                 DBG("[IKE] remote pad entry name: %s", remote);
             }
@@ -251,21 +222,25 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
 		else if (0 == strcmp("/auth-method",name)) {
             if(0 == strcmp("Host1", current_host_name)){
-                if (0 == strcmp(value->data.string_val,"pre-shared")) {		
-                    strcpy(auth_method, "psk");
-                    DBG("[PAD] auth_method: %s", auth_method);
-                } else {
-                    ERR("Auth_method unsuppoted: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
-                    return SR_ERR_VALIDATION_FAILED;
-                }    
+                strcpy(auth_method, value->data.string_val)
+                DBG("[PAD] Auth Method: %s", auth_method);
+                // if (0 == strcmp(value->data.string_val,"pre-shared")) {		
+                //     strcpy(auth_method, "psk");
+                //     DBG("[PAD] auth_method: %s", auth_method);
+                // } else {
+                //     ERR("Auth_method unsuppoted: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
+                //     return SR_ERR_VALIDATION_FAILED;
+                // }    
             }else if(0 == strcmp("Host2", current_host_name)){
-                if (0 == strcmp(value->data.string_val,"pre-shared")) {		
-                    strcpy(auth_method_2, "psk");
-                    DBG("[PAD2] auth_method: %s", auth_method_2);
-                } else {
-                    ERR("Auth_method unsuppoted: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
-                    return SR_ERR_VALIDATION_FAILED;
-                }
+                strcpy(auth_method_2, value->data.string_val);
+                DBG("[PAD2] Auth Method: %s", auth_method_2);
+                // if (0 == strcmp(value->data.string_val,"pre-shared")) {		
+                //     strcpy(auth_method_2, "psk");
+                //     DBG("[PAD2] auth_method: %s", auth_method_2);
+                // } else {
+                //     ERR("Auth_method unsuppoted: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
+                //     return SR_ERR_VALIDATION_FAILED;
+                // }
             }else{
                 DBG("Current implementation is proof of concept.");
                 DBG("It works for pad entry host name for Host1 and Host2");
