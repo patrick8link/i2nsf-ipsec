@@ -3,7 +3,7 @@ TARGET = ietf-i2nsf-controller
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/ipsec/:/usr/lib/ipsec
 
 CC = gcc
-LIBS = -lsysrepo -lpthread -lcrypt -L/usr/lib/ipsec/ -lnetconf
+LIBS = -lsysrepo -lpthread -lcrypt -L/usr/lib/ipsec/ -lnetconf2
 CFLAGS = -Wall -w  -O3 -fPIC
 DEPS = control_base/utils.h   		control_base/sysrepo_utils.h   		control_base/log.h
 LDFLAGS = 
