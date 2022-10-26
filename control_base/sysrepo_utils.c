@@ -395,16 +395,21 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         }
 
         else if (0 == strcmp("/local", name)) {
-            DBG("%s", value->data.string_val);
-            strcpy(src_tunnel, value->data.string_val);
-            DBG("mode tunnel src_tunnel: %s",src_tunnel);
+            if(NULL != strstr(value->xpath, "/tunnel")){
+                strcpy(src_tunnel, value->data.string_val);
+                DBG("mode tunnel src_tunnel: %s",src_tunnel);
+            }
                 //error = 1;
         }
 
         else if (0 == strcmp("/remote", name)) {
-            strcpy(dst_tunnel, value->data.string_val);
-            DBG("mode tunnel dst_tunnel: %s",dst_tunnel);
+            if(NULL != strstr(value->xpath, "/tunnel")){
+                strcpy(dst_tunnel, value->data.string_val);
+                DBG("mode tunnel dst_tunnel: %s",dst_tunnel);
+            }
         }
+
+
 
 
 
