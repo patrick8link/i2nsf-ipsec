@@ -68,7 +68,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         sr_free_val(old_value);
         sr_free_val(new_value);
 
-    }while(SR_ERR_OK == sr_get_change_next(sess, it &oper, &old_value, &new_value));
+    }while(SR_ERR_OK == sr_get_change_next(sess, it, &oper, &old_value, &new_value));
 
     return rc;
 }
