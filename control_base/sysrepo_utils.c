@@ -40,6 +40,8 @@ char remote[30] = "";
 int pfs_group;
 
 //PAD
+char current_host_name[50];
+
 char *entry_id;
 int key;
 char ipv4_addr[30];
@@ -196,59 +198,87 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         //PAD
         else if(0 == strcmp("/name", name)){
             if(NULL != strstr(value->xpath, "/pad")){
-                DBG("[PAD] found pad entry: %s",  value->data.string_val);
+                // DBG("[PAD] found pad entry: %s",  value->data.string_val);
+                memset(current_host_name, 0, sizeof(char) * 50);
+                strcpy(current_host_name, value->data.string_val)
             }
-            DBG("This is found but not part of PAD");
+            DBG("[PAD][IMPORTANT] CURRENT PAD NAME: %s", current_host_name);
             
         }
         else if(0 == strcmp("/id_key", name)) {
-            key = value->data.int64_val;
-        	DBG ("[PAD] id_keyt %i", key);
+            if(0 == strcmp("Host1", current_host_name)){
+                key = v->data.int64_val;
+        	    DBG("[PAD] id_keyt %i", key);    
+            }else if(0 == strcmp("Host2", current_host_name)){
+                key_2 = value->data.int64_val;
+                DBG("[PAD2] id_keyt %i", key_2)
+            }else{
+                DBG("Current implementation is proof of concept.");
+                DBG("It works for pad entry host name for Host1 and Host2");
+            }
     	}
 
 		else if (0 == strcmp("/ipv4-address",name)) {
-            strcpy(ipv4_addr, value->data.string_val);
-            DBG("[PAD] ipv4-address: %s", ipv4_addr);
+            if(0 == strcmp("Host1", current_host_name)){
+                strcpy(ipv4_addr, value->data.string_val);
+                DBG("[PAD] ipv4-address: %s", ipv4_addr);    
+            }else if(0 == strcmp("Host2", current_host_name)){
+                strcpy(ipv4_addr_2, value->data.string_val);
+                DBG("[PAD2] ipv4-address: %s", ipv4_addr_2);
+            }else{
+                DBG("Current implementation is proof of concept.");
+                DBG("It works for pad entry host name for Host1 and Host2");
+            }
         }
 
 		else if (0 == strcmp("/auth-protocol",name)) {
-            strcpy(auth_protocol, value->data.string_val);
-            DBG("[PAD] auth_protocol: %s", auth_protocol);
+            if(0 == strcmp("Host1", current_host_name)){
+                strcpy(auth_protocol, value->data.string_val);
+                DBG("[PAD] auth_protocol: %s", auth_protocol);    
+            }else if(0 == strcmp("Host2", current_host_name)){
+                strcpy(auth_protocol_2, value->data.string_val);
+                DBG("[PAD2] auth_protocol: %s", auth_protocol_2);
+            }else{
+                DBG("Current implementation is proof of concept.");
+                DBG("It works for pad entry host name for Host1 and Host2");
+            }
         }
 
 		else if (0 == strcmp("/auth-method",name)) {
-			if (0 == strcmp(value->data.string_val,"pre-shared")) {		
-                strcpy(auth_method, "psk");
-                DBG("[PAD] auth_method: %s", auth_method);
-			} else {
-				ERR("Auth_method unsuppoted: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
-				return SR_ERR_VALIDATION_FAILED;
-			}
+            if(0 == strcmp("Host1", current_host_name)){
+                if (0 == strcmp(value->data.string_val,"pre-shared")) {		
+                    strcpy(auth_method, "psk");
+                    DBG("[PAD] auth_method: %s", auth_method);
+                } else {
+                    ERR("Auth_method unsuppoted: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
+                    return SR_ERR_VALIDATION_FAILED;
+                }    
+            }else if(0 == strcmp("Host2", current_host_name)){
+                if (0 == strcmp(value->data.string_val,"pre-shared")) {		
+                    strcpy(auth_method_2, "psk");
+                    DBG("[PAD2] auth_method: %s", auth_method_2);
+                } else {
+                    ERR("Auth_method unsuppoted: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
+                    return SR_ERR_VALIDATION_FAILED;
+                }
+            }else{
+                DBG("Current implementation is proof of concept.");
+                DBG("It works for pad entry host name for Host1 and Host2");
+            }
 
         }
 
 		else if (0 == strcmp("/secret",name)) {
-			char *data;
-			int x; 
-			data = value->data.string_val;
-            strupp(data);
-            remove_all_chars(data, ':');
-            char res[500]="";
-            int length = strlen(data);
-            int i;
-            char buf=0;
-            for(i = 0; i < length; i++){
-                if(i % 2 != 0){
-                    x = hex_to_ascii(buf, data[i]);
-                    DBG("%c",x);
-                    char c = (char)x;
-                    strncat(res,&c,1);
-                }else{
-                    buf = value->data.string_val[i];
-                }
+            if(0 == strcmp("Host1", current_host_name)){
+                strcpy(ssecret, value->data.string_val);
+                DBG("[PAD] ssecret: %s", ssecret);    
+            }else if(0 == strcmp("Host2", current_host_name)){
+                strcpy(ssecret_2, value->data.string_val);
+                DBG("[PAD2] ssecret: %s", ssecret_2);
+            }else{
+                DBG("Current implementation is proof of concept.");
+                DBG("It works for pad entry host name for Host1 and Host2");
             }
-            strcpy(ssecret,res);
-            DBG("[PAD] ssecret: %s", res);
         }
 
 
