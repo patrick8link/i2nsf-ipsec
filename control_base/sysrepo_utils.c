@@ -347,7 +347,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
 
         if (0 == strcmp("/action", name)) {
-            DBG("action = %s", value->data.string_val);
+            DBG("action = %s, xpath = %s", value->data.string_val, value->xpath);
             if (!strcasecmp(value->data.string_val, "protect"))
                 action_policy_type=IPSEC_POLICY_PROTECT;
             else if (!strcasecmp(value->data.string_val, "bypass"))
