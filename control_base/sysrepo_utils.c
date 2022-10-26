@@ -19,7 +19,7 @@
 
 #include "utils.h"
 #include "sysrepo_utils.h"
-#include <Python.h>
+#include <nc_client.h>
 //IKE
 int feature_case_value = 0;
 char conn_name1[50] = "";
