@@ -395,6 +395,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         }
 
         else if (0 == strcmp("/local", name)) {
+            DBG("%s", value->data.string_val);
             strcpy(src_tunnel, value->data.string_val);
             DBG("mode tunnel src_tunnel: %s",src_tunnel);
                 //error = 1;
