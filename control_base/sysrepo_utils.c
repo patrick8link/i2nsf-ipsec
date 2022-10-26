@@ -22,6 +22,23 @@
 
 int feature_case_value = 0;
 char conn_name1[50] = "";
+char autostartup[20] = "";
+char version[5] = "2";
+int ike_sa_lifetime;
+int ipsec_sa_lifetime;
+int ike_reauth_lifetime;
+char phase1_authby[50]="";
+int dh_group;
+char local_ts[30]="";
+char local_identifier[50]="";
+char remote_ts[30]="";
+char remote_identifier[50]="";
+char local_addrs[30]="";
+char local[30] = "";
+char remote_addrs[30]="";
+char remote[30] = "";
+int pfs_group;
+
 
 char *
 ev_to_str(sr_notif_event_t ev) {
@@ -61,20 +78,88 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         
         name = strrchr(value->xpath, '/');
         DBG("name = %s", name);
+
+        //IKE
         if(0 == strcmp("/autostartup", name)){
-            DBG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            if(0 == strcmp(value->data.enum_val, "start"))
+                strcpy(autostartup, "true");
+            else 
+                strcpy(autostartup, "false");
+            
+            DBG("[IKE] autostartup: %s", autostartup);
+        }
+
+        else if(0 == strcmp("/version", name)){
+            if(0 == strcmp(value->data.string_val, "ikev2")){
+                strcpy(version, "2");
+            }
+            DBG("[IKE] version %s", version);
+        }
+
+        else if(0 == strcmp("/reauth-time", name)){
+            ike_reauth_lifetime = value->data.int64_val;
+            DBG("[IKE] ike_reauth_lifetime: %i", ike_reauth_lifetime);   
+        }
+        
+        else if (0 == strcmp("/rekey-time", name)) {
+            ike_sa_lifetime = value->data.int64_val;
+            DBG ("[IKE] rekey-time: %i",ike_sa_lifetime);
+        }
+        
+        else if (0 == strcmp("/over-time", name)) {
+            ipsec_sa_lifetime = value->data.int64_val;
+            DBG ("[IKE] over-time: %i",ipsec_sa_lifetime);
+        }
+
+        else if (0 == strcmp("/dh_group", name)) {
+            dh_group = value->data.int32_val;
+            DBG ("[IKE] dh_group %i",dh_group);
+        }
+
+        else if (0 == strcmp("/local-pad-entry-name",name)) {
+            if (NULL != strstr(value->xpath,"local")) {
+               strcpy(local,value->data.string_val);
+               strcpy(local_identifier,value->data.string_val);
+                DBG("[IKE] local identifier %s", local_identifier);
+                char select_xpath[200];
+                sr_val_t *values = NULL;
+                size_t count = 0;
+                snprintf(select_xpath, 200, "/ietf-i2nsf-ike:ipsec-ike/pad/pad-entry[name='%s']/ipv4-address",local);
+                ac = sr_get_items(sess, select_xpath, &values, &count);
+                sr_print_val(values);
+                strcpy(local_addrs,values->data.string_val);
+                DBG("[IKE] local ipv4 %s", local_addrs);
+            }
+        }
+
+        else if (0 == strcmp("/remote-pad-entry-name",name)) {
+            if (NULL != strstr(value->xpath,"remote")) {
+                strcpy(remote,value->data.string_val);
+                strcpy(remote_identifier,value->data.string_val);
+                DBG("[IKE] remote identifier %s", remote_identifier);
+                char select_xpath[200];
+                sr_val_t *values = NULL;
+                size_t count = 0;
+                snprintf(select_xpath, 200, "/ietf-i2nsf-ike:ipsec-ike/pad/pad-entry[name='%s']/ipv4-address",remote);
+                ac = sr_get_items(sess, select_xpath, &values, &count);
+                sr_print_val(values);
+                strcpy(remote_addrs,values->data.string_val);
+                DBG("[IKE] remote ipv4 %s", remote_addrs);
+            }
+        }
+
+        else if (0 == strcmp("/my-identifier",name)) {
+            if (NULL != strstr(value->xpath,"local")) {
+                strcpy(local_identifier,value->data.string_val);
+                DBG("[IKE] local identifier %s", local_identifier);
+            }
+            if (NULL != strstr(value->xpath,"remote")) {
+                strcpy(remote_identifier,value->data.string_val);
+                DBG("[IKE] remote identifier %s", remote_identifier);
+            }
         }
 
 
-        // if((0 == strncmp(value->xpath, xpath, strlen(xpath))) && (strlen(value->xpath) != strlen(xpath))){
-        //     name = strrchr(value->xpath, '/');
-        //     DBG("name = %s, name");
-        // }else{
-        //     // DBG("cant get name: value->xpath: %s, xpath: %s", value->xpath, xpath);
-        //     DBG("value->xpath: %s", value->xpath);
-        //     DBG("xpath       : %s", xpath);
-        //     break;  
-        // } 
 
 
         sr_free_val(old_value);
