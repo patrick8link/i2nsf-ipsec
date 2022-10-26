@@ -61,7 +61,10 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         
         name = strchr(value->xpath, '/');
         DBG("name = %s", name);
-        
+        if(0 == strcmp("/autostartup", name)){
+            DBG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
+
 
         // if((0 == strncmp(value->xpath, xpath, strlen(xpath))) && (strlen(value->xpath) != strlen(xpath))){
         //     name = strrchr(value->xpath, '/');
