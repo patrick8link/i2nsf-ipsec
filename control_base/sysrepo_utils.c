@@ -54,15 +54,13 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
     if(SR_ERR_OK != rc){
         return rc;
     }do{
-        if(oper == SR_OP_CREATED)
-            value = new_value;
-        else
-            value = old_value;
+        if(oper == SR_OP_CREATED) value = new_value;
+        else value = old_value;
 
         if((0 == strncmp(value->xpath, xpath, strlen(xpath))) && (strlen(value->xpath) != strlen(xpath))){
             name = strrchr(value->xpath, '/');
             DBG("name = %s, name");
-        }
+        }else break;
 
 
         sr_free_val(old_value);
