@@ -200,7 +200,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
             if(NULL != strstr(value->xpath, "/pad")){
                 // DBG("[PAD] found pad entry: %s",  value->data.string_val);
                 memset(current_host_name, 0, sizeof(char) * 50);
-                strcpy(current_host_name, value->data.string_val)
+                strcpy(current_host_name, value->data.string_val);
             }
             DBG("[PAD][IMPORTANT] CURRENT PAD NAME: %s", current_host_name);
             
@@ -211,7 +211,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         	    DBG("[PAD] id_keyt %i", key);    
             }else if(0 == strcmp("Host2", current_host_name)){
                 key_2 = value->data.int64_val;
-                DBG("[PAD2] id_keyt %i", key_2)
+                DBG("[PAD2] id_keyt %i", key_2);
             }else{
                 DBG("Current implementation is proof of concept.");
                 DBG("It works for pad entry host name for Host1 and Host2");
