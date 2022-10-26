@@ -47,6 +47,13 @@ char auth_protocol[50];
 char auth_method[40];
 char ssecret[40];
 
+char *entry_id_2;
+int key_2;
+char ipv4_addr_2[30];
+char auth_protocol_2[50];
+char auth_method_2[40];
+char ssecret_2[40];
+
 
 //SPD
 char src[30], dst[30], src_remove[30], dst_remove[30],src_tunnel[30], dst_tunnel[30];
@@ -189,23 +196,23 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         //PAD
         else if(0 == strcmp("/id_key", name)) {
             key = value->data.int64_val;
-        	DBG ("id_keyt %i",key);
+        	DBG ("[PAD] %s id_keyt %i", conn_name1, key);
     	}
 
 		else if (0 == strcmp("/ipv4-address",name)) {
             strcpy(ipv4_addr, value->data.string_val);
-            DBG("ipv4-address: %s",ipv4_addr);
+            DBG("[PAD] %s ipv4-address: %s", conn_name1, ipv4_addr);
         }
 
 		else if (0 == strcmp("/auth-protocol",name)) {
             strcpy(auth_protocol, value->data.string_val);
-            DBG("auth_protocol: %s",auth_protocol);
+            DBG("[PAD] %s auth_protocol: %s", conn_name1, auth_protocol);
         }
 
 		else if (0 == strcmp("/auth-method",name)) {
 			if (0 == strcmp(value->data.string_val,"pre-shared")) {		
                 strcpy(auth_method, "psk");
-                DBG("auth_method: %s",auth_method);
+                DBG("[PAD] %s auth_method: %s", conn_name1, auth_method);
 			} else {
 				ERR("Auth_method unsuppoted: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
 				return SR_ERR_VALIDATION_FAILED;
@@ -234,7 +241,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
                 }
             }
             strcpy(ssecret,res);
-            DBG("ssecret: %s",res);
+            DBG("[PAD] %s ssecret: %s", conn_name1, res);
         }
 
 
@@ -252,7 +259,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
                 ERR("spd-entry Bad direction: %s", sr_strerror(rc));
                 return rc;
             }
-            DBG("direction: %i",policy_dir);
+            DBG("[SPD] direction: %i",policy_dir);
         }
 
         else if (NULL != strstr(value->xpath,"/traffic-selector")) {
@@ -274,40 +281,40 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         else if (0 == strcmp("/bytes", name)) {
             if (NULL != strstr(value->xpath,"/spd-lifetime-soft")) { 
                 spd_lft_byte_soft = value->data.int32_val;
-                DBG("lifetime byte-soft: %i",spd_lft_byte_soft);
+                DBG("[SPD] lifetime byte-soft: %i",spd_lft_byte_soft);
             } else if (NULL != strstr(value->xpath,"/spd-lifetime-hard")) { 
                 spd_lft_byte_hard = value->data.int32_val;
-                DBG("lifetime byte-hard: %i",spd_lft_byte_hard);
+                DBG("[SPD] lifetime byte-hard: %i",spd_lft_byte_hard);
             }
         }  
 
         else if (0 == strcmp("/packets", name)) {
             if (NULL != strstr(value->xpath,"/spd-lifetime-soft")) { 
                 spd_lft_packet_soft = value->data.int32_val;
-                DBG("lifetime packet-soft: %i",spd_lft_packet_soft);
+                DBG("[SPD] lifetime packet-soft: %i",spd_lft_packet_soft);
             } else if (NULL != strstr(value->xpath,"/spd-lifetime-hard")) {  
                 spd_lft_packet_hard = value->data.int32_val;
-                DBG("lifetime packet-hard: %i",spd_lft_packet_hard);
+                DBG("[SPD] lifetime packet-hard: %i",spd_lft_packet_hard);
             }  
         }  
 
         else if (0 == strcmp("/added", name)) {
             if (NULL != strstr(value->xpath,"/spd-lifetime-soft")) { 
                 spd_lft_soft_add_expires_seconds = value->data.int64_val;
-                DBG("lifetime time-soft: %i",spd_lft_soft_add_expires_seconds);
+                DBG("[SPD] lifetime time-soft: %i",spd_lft_soft_add_expires_seconds);
             } else if (NULL != strstr(value->xpath,"/spd-lifetime-hard")) { 
                 spd_lft_hard_add_expires_seconds= value->data.int64_val;
-                DBG("lifetime time-hard: %i",spd_lft_hard_add_expires_seconds);
+                DBG("[SPD] lifetime time-hard: %i",spd_lft_hard_add_expires_seconds);
             }
         }  
 
         else if (0 == strcmp("/used", name)) {
             if (NULL != strstr(value->xpath,"/spd-lifetime-soft")) { 
                 spd_lft_soft_use_expires_seconds = value->data.int64_val;
-                DBG("lifetime time-use-soft: %i",spd_lft_soft_use_expires_seconds);
+                DBG("[SPD] lifetime time-use-soft: %i",spd_lft_soft_use_expires_seconds);
             } else if (NULL != strstr(value->xpath,"/spd-lifetime-hard")) {  
                 spd_lft_hard_use_expires_seconds= value->data.int64_val;
-                DBG("lifetime time-use-hard: %i",spd_lft_hard_use_expires_seconds);
+                DBG("[SPD] lifetime time-use-hard: %i",spd_lft_hard_use_expires_seconds);
             }  
         }  
 
