@@ -21,6 +21,7 @@
 #include "sysrepo_utils.h"
 
 int feature_case_value = 0;
+char conn_name1[50] = "";
 
 char *
 ev_to_str(sr_notif_event_t ev) {
@@ -36,8 +37,50 @@ ev_to_str(sr_notif_event_t ev) {
     }
 }
 
-int addIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpath, char *ike_id){
+int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpath, char *ipsec_id){
+    int rc = SR_ERR_OK;
+    int ac = SR_ERR_OK;
+    sr_change_oper_t oper;
+    sr_val_t *value = NULL;
+    sr_val_t *old_value = NULL;
+    sr_val_t *new_value = NULL;
+    char *name = NULL;
+    char proposals[50] = "default";
+    char peer[30];
+
+    strcpy(conn_name1, ipsec_id);
+    DBG("Reading IPSEC entry: %s", conn_name1);
+    rc = sr_get_change_next(sess, it, &oper, &old_value, &new_value);
+    if(SR_ERR_OK != rc){
+        return rc;
+    }do{
+        if(oper == SR_OP_CREATED)
+            value = new_value;
+        else
+            value = old_value;
+
+        if((0 == strncmp(value->xpath, xpath, strlen(xpath))) && (strlen(value->xpath) != strlen(xpath))){
+            name = strrchr(value->xpath, '/');
+            DBG("name = %s, name");
+        }
+
+
+        sr_free_val(old_value);
+        sr_free_val(new_value);
+
+    }while(SR_ERR_OK == sr_get_change_next(sess, it &oper, &old_value, &new_value));
+
+    return rc;
+}
+
+int addIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpath, char *ipsec_id){
     DBG("Starting addIPSEC_conn_entry");
+    int rc = SR_ERR_OK;
+    rc = readIPSEC_conn_entry(sess, it, xpath, ipsec_id);
+    if(rc != SR_ERR_OK){
+        ERR("Failed to Add entry in verifyIPSEC_entry: %s", sr_strerror(rc));
+        return SR_ERR_VALIDATION_FAILED;
+    }
     DBG("Exiting addIPSEC_conn_entry");
     return SR_ERR_OK;
 }
