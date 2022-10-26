@@ -59,7 +59,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         if(oper == SR_OP_CREATED) value = new_value;
         else value = old_value;
         
-        name = strchr(value->xpath, '/');
+        name = strrchr(value->xpath, '/');
         DBG("name = %s", name);
         if(0 == strcmp("/autostartup", name)){
             DBG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
