@@ -29,6 +29,15 @@ IKE_DHGROUP = sys.argv[17]
 IKE_LOCALPADNAME = sys.argv[18]
 IKE_REMOTEPADNAME = sys.argv[19]
 
+SPD_LOCALPREFIX = sys.argv[20]
+SPD_REMOTEPREFIX = sys.argv[21]
+SPD_INNERPROTOCOL = sys.argv[22]
+SPD_ACTION = sys.argv[23]
+SPD_MODE = sys.argv[24]
+SPD_PROTOCOLPARAM = sys.argv[25]
+SPD_LOCALTUNNEL = sys.argv[26]
+SPD_REMOTETUNNEL = sys.argv[27]
+
 
 with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", password="netconf", hostkey_verify=False) as m:
     c = m.get_config(source='running')
@@ -96,23 +105,23 @@ with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", passw
         </remote>
         <spd>
           <spd-entry>
-             <name>gateway1</name>
+             <name>{IKE_NAME}</name>
              <ipsec-policy-config>
                <anti-replay-window-size>64</anti-replay-window-size>
                <traffic-selector>
-                  <local-prefix>192.168.201.0/24</local-prefix>
-                  <remote-prefix>192.168.202.0/24</remote-prefix>
-                  <inner-protocol>6</inner-protocol>
+                  <local-prefix>{SPD_LOCALPREFIX}</local-prefix>
+                  <remote-prefix>{SPD_REMOTEPREFIX}</remote-prefix>
+                  <inner-protocol>{SPD_INNERPROTOCOL}</inner-protocol>
                </traffic-selector>
                <processing-info>
-                  <action>protect</action>
+                  <action>{SPD_ACTION}</action>
                   <ipsec-sa-cfg>
                      <pfp-flag>false</pfp-flag>
                      <ext-seq-num>true</ext-seq-num>
                      <seq-overflow>false</seq-overflow>
                      <stateful-frag-check>false</stateful-frag-check>
-                     <mode>tunnel</mode>
-                     <protocol-parameters>esp</protocol-parameters>
+                     <mode>{SPD_MODE}</mode>
+                     <protocol-parameters>{SPD_PROTOCOLPARAM}</protocol-parameters>
                      <esp-algorithms>
                         <!-- AUTH_HMAC_SHA1_96 -->
                         <integrity>2</integrity>
@@ -130,8 +139,8 @@ with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", passw
                         <tfc-pad>false</tfc-pad>
                      </esp-algorithms>
                      <tunnel>
-                        <local>192.168.123.100</local>
-                        <remote>192.168.123.200</remote>
+                        <local>{SPD_LOCALTUNNEL}</local>
+                        <remote>{SPD_REMOTETUNNEL}</remote>
                         <df-bit>clear</df-bit>
                         <bypass-dscp>true</bypass-dscp>
                      </tunnel>

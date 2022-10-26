@@ -95,10 +95,11 @@ ev_to_str(sr_notif_event_t ev) {
 // Probably a better way to do this but thats a problem for another day.
 void send_rpc_call(){
     char cmd[500];
-    sprintf(cmd, "python3.8 ./python/test/rpc2Gw1.py %s %s %s %s %s %s %s %s %s %s %s %s %s %d %d %d %d %s %s", 
+    sprintf(cmd, "python3.8 ./python/test/rpc2Gw1.py %s %s %s %s %s %s %s %s %s %s %s %s %s %d %d %d %d %s %s      %s %s %d %s %s %s %s %s", 
     hostname, ipv4_addr, auth_protocol, auth_method, ssecret,
     hostname_2, ipv4_addr_2, auth_protocol_2, auth_method_2, ssecret_2,
-    conn_name1, autostartup, version, ike_sa_lifetime, ike_reauth_lifetime, ipsec_sa_lifetime, dh_group, local, remote);
+    conn_name1, autostartup, version, ike_sa_lifetime, ike_reauth_lifetime, ipsec_sa_lifetime, dh_group, local, remote
+    src, dst, protocol_next_layer, action_policy_type, mode, satype, src_tunnel, dst_tunnel);
     system(cmd);
     // nc_connect_ssh("10.0.1.204", 830, NULL);
 }
@@ -266,47 +267,14 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
 
         //SPD
-        if (NULL != strstr(value->xpath,"/direction")) {
+        else if (NULL != strstr(value->xpath,"/direction")) {
             strcpy(policy_dir, value->data.string_val);
             DBG("[SPD] policy direction : %s", policy_dir);
-            // if (!strcasecmp(value->data.string_val, "OUTBOUND"))
-            //     policy_dir =  IPSEC_DIR_OUTBOUND;
-            // else if (!strcasecmp(value->data.string_val, "INBOUND"))
-            //     policy_dir = IPSEC_DIR_INBOUND;
-            // else if (!strcasecmp(value->data.string_val, "FORWARD"))
-            //     policy_dir = IPSEC_DIR_FORWARD;
-            // else {
-            //     rc = SR_ERR_VALIDATION_FAILED;    
-            //     ERR("spd-entry Bad direction: %s", sr_strerror(rc));
-            //     return rc;
-            // }
-            // DBG("[SPD] direction: %i",policy_dir);
         }
 
-        // else if (NULL != strstr(value->xpath,"/traffic-selector")) {
-        //     DBG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!new iterator - traffic selector!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        //     // if (getSelectorList_it(sess,it,xpath,oper,old_value,new_value)){
-        //     //     rc = SR_ERR_VALIDATION_FAILED;
-        //     //     break;
-        //     // }
-        // }
-        if (0 == strcmp("/inner-protocol", name)) {
+        else if (0 == strcmp("/inner-protocol", name)) {
             protocol_next_layer = value->data.uint8_val;
             DBG("[SPD][TRAFFIC-SELECTOR] inner-protocol: %i", protocol_next_layer); //This can be int and string?
-            // if (value->data.uint8_val == 6)
-            //     protocol_next_layer =  IPSEC_NLP_TCP;
-            // else if (value->data.uint8_val == 17)
-            //     protocol_next_layer = IPSEC_NLP_UDP;
-            // else if (value->data.uint8_val == 132)
-            //     protocol_next_layer = IPSEC_NLP_SCTP;
-            // else if (!strcasecmp(value->data.string_val, "any"))
-            //     protocol_next_layer = 256;
-            // else {
-            //     rc = SR_ERR_VALIDATION_FAILED;
-            //     ERR("spd-entry Bad inner-protocol: %s", sr_strerror(rc));
-            //     return rc;
-            // }
-            // DBG("inner-protocol: %i",protocol_next_layer);
         }
 
         else if (0 == strncmp("/local-prefix", name,strlen("/local-prefix"))) {
@@ -320,33 +288,9 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
                 DBG("[SPD][TRAFFIC-SELECTOR] remote-prefix: %s",dst);
         }
 
-
-
-        // else if (NULL != strstr(value->xpath,"/processing-info")) {
-        //     DBG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!new iterator - processing info!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        //     // if (getProcessing_it(sess,it,xpath,oper,old_value,new_value)) {
-        //     //     rc = SR_ERR_VALIDATION_FAILED;
-        //     //     break;
-        //     // }
-        // }
-
-
-        if (0 == strcmp("/action", name)) {
+        else if (0 == strcmp("/action", name)) {
             
             if(NULL != strstr(value->xpath, "/processing-info")){
-                // DBG("action = %s, xpath = %s", value->data.string_val, value->xpath);
-                // if (!strcasecmp(value->data.string_val, "protect"))
-                //     action_policy_type=IPSEC_POLICY_PROTECT;
-                // else if (!strcasecmp(value->data.string_val, "bypass"))
-                //     action_policy_type=IPSEC_POLICY_BYPASS;
-                // else if (!strcasecmp(value->data.string_val, "discard"))
-                //     action_policy_type=IPSEC_POLICY_DISCARD;
-                // else {
-                //     rc = SR_ERR_VALIDATION_FAILED;
-                //     ERR("spd-entry Bad action: %s", sr_strerror(rc));
-                //     return rc;
-                // }
-                // DBG("action: %i",action_policy_type);
 
                 strcpy(action_policy_type, value->data.string_val);
                 DBG("[SPD][PROCESSING-INFO] action: %s", action_policy_type);
@@ -358,40 +302,12 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
             strcpy(satype, value->data.string_val);
             DBG("[SPD][PROCESSING-INFO] satype: %s", satype);
-            // if (!strcasecmp(value->data.string_val, "esp")){
-            //     satype = SADB_SATYPE_ESP;
-            //     proto = IPPROTO_ESP;
-            // }
-            // else if (!strcasecmp(value->data.string_val, "ah")) {
-            //     satype = SADB_SATYPE_AH;
-            //     proto = IPPROTO_AH;
-            // }
-            // else {
-            //     rc = SR_ERR_VALIDATION_FAILED;
-            //     ERR("spd-entry Bad satype: %s", sr_strerror(rc));
-            //     return rc;
-            // }
-            // DBG("satype: %i",satype);
         }
 
         else if (0 == strcmp("/mode", name)) {
 
             strcpy(mode, value->data.string_val);
             DBG("[SPD][PROCESSING-INFO] mode: %s", mode);
-            // DBG("mode found");
-            // if (!strcasecmp(value->data.string_val, "TRANSPORT")){
-            //     mode = IPSEC_MODE_TRANSPORT;
-            // }
-            // else if (!strcasecmp(value->data.string_val, "TUNNEL")) {
-            //     mode = IPSEC_MODE_TUNNEL; 
-
-            // }
-            // else {
-            //     rc = SR_ERR_VALIDATION_FAILED;
-            //     ERR("spd-entry Bad mode: %s", sr_strerror(rc));
-            //     return rc;
-            // }
-            // DBG("mode: %i",mode);
         }
 
         else if (0 == strcmp("/local", name)) {
