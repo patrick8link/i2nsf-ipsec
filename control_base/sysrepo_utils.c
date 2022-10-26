@@ -47,14 +47,14 @@ int key;
 char ipv4_addr[30];
 char auth_protocol[50];
 char auth_method[40];
-char ssecret[40];
+char ssecret[70];
 
 char *entry_id_2;
 int key_2;
 char ipv4_addr_2[30];
 char auth_protocol_2[50];
 char auth_method_2[40];
-char ssecret_2[40];
+char ssecret_2[70];
 
 
 //SPD
