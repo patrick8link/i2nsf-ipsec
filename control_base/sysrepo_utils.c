@@ -58,7 +58,7 @@ char ssecret_2[70];
 
 
 //SPD
-char src[30], dst[30], src_remove[30], dst_remove[30],src_tunnel[30], dst_tunnel[30];
+char src[30], dst[30], src_remove[50], dst_remove[50],src_tunnel[50], dst_tunnel[50];
 int satype, action_policy_type, policy_dir, policy_id, protocol_next_layer, srcport, dstport, mode, proto;
 int spd_lft_byte_hard = 0;
 int spd_lft_byte_soft = 0;
