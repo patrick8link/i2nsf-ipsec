@@ -207,7 +207,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
         }
         else if(0 == strcmp("/id_key", name)) {
             if(0 == strcmp("Host1", current_host_name)){
-                key = v->data.int64_val;
+                key = value->data.int64_val;
         	    DBG("[PAD] id_keyt %i", key);    
             }else if(0 == strcmp("Host2", current_host_name)){
                 key_2 = value->data.int64_val;
