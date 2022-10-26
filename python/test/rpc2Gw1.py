@@ -6,10 +6,20 @@ HOST_PORT = 830
 
 PAD_NAME_1 = sys.argv[1]
 print(f"PAD_NAME_1 = {sys.argv[1]}")
-PAD_IP4ADDR_1 = sys.argv[2];
+PAD_IP4ADDR_1 = sys.argv[2]
 print(f"PAD_IP4ADDR_1 = {sys.argv[2]}")
 PAD_AUTHPROTOCOL_1 = sys.argv[3]
 print(f"PAD_AUTHPROTOCOL_1 = {sys.argv[3]}")
+PAD_AUTHMETHOD_1 = sys.argv[4]
+PAD_SECRET_1 = sys.argv[5]
+
+PAD_NAME_2 = sys.argv[6]
+PAD_IP4ADDR_2 = sys.argv[7]
+PAD_AUTHPROTOCOL_2 = sys.argv[8]
+PAD_AUTHMETHOD_2 = sys.argv[9]
+PAD_SECRET_2 = sys.argv[10]
+
+
 
 with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", password="netconf", hostkey_verify=False) as m:
     c = m.get_config(source='running')
@@ -26,20 +36,20 @@ with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", passw
             <ipv4-address>{PAD_IP4ADDR_1}</ipv4-address>
             <auth-protocol>{PAD_AUTHPROTOCOL_1}</auth-protocol>
             <peer-authentication>
-                <auth-method>pre-shared</auth-method>
+                <auth-method>{PAD_AUTHMETHOD_1}</auth-method>
                 <pre-shared>
-                    <secret>73:65:63:72:65:74:6F:5F:63:6F:6D:70:61:72:74:69:64:6F</secret>
+                    <secret>{PAD_SECRET_1}</secret>
                 </pre-shared>
             </peer-authentication>
         </pad-entry>
         <pad-entry>
-            <name>Host2</name>
-            <ipv4-address>192.168.123.200</ipv4-address>
-            <auth-protocol>ikev2</auth-protocol>
+            <name>{PAD_NAME_2}</name>
+            <ipv4-address>{PAD_IP4ADDR_2}</ipv4-address>
+            <auth-protocol>{PAD_AUTHPROTOCOL_2}</auth-protocol>
             <peer-authentication>
-                <auth-method>pre-shared</auth-method>
+                <auth-method>{PAD_AUTHMETHOD_2}</auth-method>
                 <pre-shared>
-                    <secret>73:65:63:72:65:74:6F:5F:63:6F:6D:70:61:72:74:69:64:6F</secret>
+                    <secret>{PAD_SECRET_2}</secret>
                 </pre-shared>
             </peer-authentication>
         </pad-entry>
