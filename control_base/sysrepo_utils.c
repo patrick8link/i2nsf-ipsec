@@ -50,7 +50,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
     strcpy(conn_name1, ipsec_id);
     DBG("Reading IPSEC entry: %s", conn_name1);
-    // rc = sr_get_change_next(sess, it, &oper, &old_value, &new_value);
+    rc = sr_get_change_next(sess, it, &oper, &old_value, &new_value);
     if(SR_ERR_OK != rc){
         DBG("sr_get_change_next returned error");
         return rc;
@@ -62,7 +62,9 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
             name = strrchr(value->xpath, '/');
             DBG("name = %s, name");
         }else{
-            DBG("cant get name: value->xpath: %s, xpath: %s", value->xpath, xpath);
+            // DBG("cant get name: value->xpath: %s, xpath: %s", value->xpath, xpath);
+            DBG("value->xpath: %s", value->xpath);
+            DBG("xpath       : %s", xpath);
             break;  
         } 
 
