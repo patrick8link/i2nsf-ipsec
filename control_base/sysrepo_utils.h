@@ -39,11 +39,8 @@ int sad_stats_cb(const char *xpath, sr_val_t **values, size_t *values_cnt, void 
 int spd_lifetime_current_cb(const char *xpath, sr_val_t **values, size_t *values_cnt, void *private_ctx);
 int rpc_register_caller(sr_session_ctx_t *session, int satype);
 
-int ike_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath, sr_notif_event_t event, void *private_ctx);
-int rpc_sadb_register_cb(const char *xpath, const sr_val_t *input, const size_t input_cnt, sr_val_t **output, size_t *output_cnt, void *private_ctx);
-int spd_entry_change_cb(sr_session_ctx_t *session, const char *spd_entry_xpath, sr_notif_event_t event, void *private_ctx);
-int sad_entry_change_cb(sr_session_ctx_t *session, const char *sad_entry_xpath, sr_notif_event_t event, void *private_ctx);
-int pad_entry_change_cb(sr_session_ctx_t *session, const char *pad_entry_xpath, sr_notif_event_t event, void *private_ctx);
+int ipsec_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath, sr_notif_event_t event, void *private_ctx);
+
 
 
 
