@@ -131,7 +131,7 @@ int ipsec_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath
         }
         DBG(" ========== END OF CHANGES =======================================");
     }
-    system("python3.8 ./python/test/hello.py");
+    system("python3.8 ./python/test/rpc2Gw1.py");
 cleanup:
 
     sr_free_change_iter(it);
