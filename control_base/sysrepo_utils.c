@@ -195,7 +195,8 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
         //PAD
         else if(0 == strcmp("/name", name)){
-            DBG("[PAD] found pad entry: %s", value->data.string_val);
+            DBG("[PAD] found pad entry under %s: %s", value->xpath, value->data.string_val);
+            
         }
         else if(0 == strcmp("/id_key", name)) {
             key = value->data.int64_val;
