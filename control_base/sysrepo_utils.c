@@ -36,6 +36,11 @@ ev_to_str(sr_notif_event_t ev) {
     }
 }
 
+int addIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpath, char *ike_id){
+    DBG("Starting addIPSEC_conn_entry");
+    DBG("Exiting addIPSEC_conn_entry");
+    return SR_ERR_OK;
+}
 
 static void
 print_current_config(sr_session_ctx_t *session, const char *module_name) {
