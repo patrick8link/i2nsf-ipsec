@@ -222,7 +222,7 @@ int readIPSEC_conn_entry(sr_session_ctx_t *sess, sr_change_iter_t *it, char *xpa
 
 		else if (0 == strcmp("/auth-method",name)) {
             if(0 == strcmp("Host1", current_host_name)){
-                strcpy(auth_method, value->data.string_val)
+                strcpy(auth_method, value->data.string_val);
                 DBG("[PAD] Auth Method: %s", auth_method);
                 // if (0 == strcmp(value->data.string_val,"pre-shared")) {		
                 //     strcpy(auth_method, "psk");
