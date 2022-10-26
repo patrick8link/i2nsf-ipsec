@@ -5,6 +5,11 @@ HOST_CLIENT = "10.0.1.204"
 HOST_PORT = 830
 
 PAD_NAME_1 = sys.argv[1]
+print(f"PAD_NAME_1 = {sys.argv[1]}")
+PAD_IP4ADDR_1 = sys.argv[2];
+print(f"PAD_IP4ADDR_1 = {sys.argv[2]}")
+PAD_AUTHPROTOCOL_1 = sys.argv[3]
+print(f"PAD_AUTHPROTOCOL_1 = {sys.argv[3]}")
 
 with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", password="netconf", hostkey_verify=False) as m:
     c = m.get_config(source='running')
@@ -18,8 +23,8 @@ with manager.connect(host=HOST_CLIENT, port=HOST_PORT, username="netconf", passw
     <pad>
         <pad-entry>
             <name>{PAD_NAME_1}</name>
-            <ipv4-address>192.168.123.100</ipv4-address>
-            <auth-protocol>ikev2</auth-protocol>
+            <ipv4-address>{PAD_IP4ADDR_1}</ipv4-address>
+            <auth-protocol>{PAD_AUTHPROTOCOL_1}</auth-protocol>
             <peer-authentication>
                 <auth-method>pre-shared</auth-method>
                 <pre-shared>

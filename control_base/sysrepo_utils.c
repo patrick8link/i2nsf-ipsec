@@ -92,9 +92,9 @@ ev_to_str(sr_notif_event_t ev) {
     }
 }
 
-void send_rpc_call(char* hostname){
+void send_rpc_call(){
     char cmd[128];
-    sprintf(cmd, "python3.8 ./python/test/rpc2Gw1.py %s", hostname);
+    sprintf(cmd, "python3.8 ./python/test/rpc2Gw1.py %s %s", hostname, ipv4_addr, auth_protocol);
     system(cmd);
 }
 
@@ -576,7 +576,7 @@ int ipsec_entry_change_cb(sr_session_ctx_t *session, const char *ike_entry_xpath
             sr_free_val(new_value);
         }
         DBG(" ========== END OF CHANGES =======================================");
-        send_rpc_call(hostname);
+        send_rpc_call();
         
     }
 cleanup:
