@@ -20,12 +20,12 @@
 //IKELESS VERSION
 #include <unistd.h>
 
-#include "base/utils.h"
-#include "base/log.h"
-#include "base/spd_entry.h"
-#include "base/sad_entry.h"
-#include "base/sysrepo_utils.h"
-#include "base/pfkeyv2_entry.h"
+#include "../base/utils.h"
+#include "../base/log.h"
+#include "../base/spd_entry.h"
+#include "../base/sad_entry.h"
+#include "../base/sysrepo_utils.h"
+#include "../base/pfkeyv2_entry.h"
 
 #define VERSION "0.1"
 

@@ -19,9 +19,9 @@
 
 #include <unistd.h>
 
-#include "control_base/utils.h"
-#include "control_base/log.h"
-#include "control_base/sysrepo_utils.h"
+#include "../control_base/utils.h"
+#include "../control_base/log.h"
+#include "../control_base/sysrepo_utils.h"
 
 #define VERSION "0.1"
 
