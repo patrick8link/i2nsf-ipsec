@@ -18,8 +18,9 @@
  */
 
 #include "sad_entry.h"
+#include "utils.h"
 
-char src[20], dst[20], src_tunnel[20], dst_tunnel[20], protocol[4], encrypt_key[30],auth_key[20];
+char src[20], dst[20], src_tunnel[20], dst_tunnel[20], protocol[4], encrypt_key[30],auth_key[30];
 int protocol_next_layer, srcport, dstport, satype, encrypt_alg, auth_alg,iv, mode, spi;
 int replay = 0;
 int seq_number = 0;
@@ -39,8 +40,18 @@ int lft_current_add_expires_seconds = 0;
 int lft_current_use_expires_seconds = 0;
 
 
+// union tmp_sr_data_u{
+//     char* string_val;
+//     int64_t int64_val;
+// };
+
+// typedef union tmp_sr_data_u tmp_sr_data_t;
+
+
 char address[30];
 sad_entry_node *init_sad_node = NULL;
+
+
 
 sad_entry_node* createSADnode(){
 
@@ -216,30 +227,24 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
 
         if ((0 == strncmp(value->xpath, xpath,strlen(xpath))) && (strlen(value->xpath)!=strlen(xpath))) {
 	        name = strrchr(value->xpath, '/');
-            if (0 == strcmp("/next-layer-protocol", name)) {
-                if (!strcasecmp(value->data.string_val, "TCP"))
+            if (0 == strcmp("/inner-protocol", name)) {
+                if (value->data.uint8_val == 6)
+                    protocol_next_layer =  IPSEC_NLP_TCP;
+                else if (value->data.uint8_val == 17)
+                    protocol_next_layer = IPSEC_NLP_UDP;
+                else if (value->data.uint8_val == 132)
+                    protocol_next_layer = IPSEC_NLP_SCTP;
+                else if (!strcasecmp(value->data.string_val, "ANY"))//Currently treat any as tcp
                         protocol_next_layer =  IPSEC_NLP_TCP;
-                else if (!strcasecmp(value->data.string_val, "UDP"))
-                        protocol_next_layer = IPSEC_NLP_UDP;
-                else if (!strcasecmp(value->data.string_val, "SCTP"))
-                        protocol_next_layer = IPSEC_NLP_SCTP;
                 else {
                         ERR("spd-entry Bad next-layer-protocol: %s",sr_strerror(SR_ERR_VALIDATION_FAILED));
                         return SR_ERR_VALIDATION_FAILED;
                 }
-                DBG("next-layer-protocol: %i",protocol_next_layer);
+                DBG("inner-protocol: %i",protocol_next_layer);
             }
 
             else if (0 == strncmp("/start", name,strlen("/start"))) {
-                if (NULL != strstr(value->xpath,"/local-addresses")) {
-                    strcpy(src, value->data.string_val);
-                    DBG("local-address start: %s",src);
-                }
-                else if (NULL != strstr(value->xpath,"/remote-addresses")) {
-                    strcpy(dst, value->data.string_val);
-                    DBG("remote-address start: %s",dst);
-                }
-                else if (NULL != strstr(value->xpath,"/local-ports")) {
+                if (NULL != strstr(value->xpath,"/local-ports")) {
                     srcport = value->data.int64_val;
                     DBG("local-port start: %i",srcport);
                 }
@@ -249,7 +254,17 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
                 }
             }
 
-            else if (0 == strcmp("/security-protocol", name)) {
+            else if (0 == strncmp("/local-prefix", name, strlen("/local-prefix"))){
+		        strcpy(src, value->data.string_val);
+		        DBG("local prefix: %s", src);
+	        }
+
+	        else if(0 == strncmp("/remote-prefix", name, strlen("/remote-prefix"))){
+		        strcpy(dst, value->data.string_val);
+		        DBG("remote prefix: %s", dst);
+	        }
+
+            else if (0 == strcmp("/protocol-parameters", name)) {
                 if (!strcasecmp(value->data.string_val, "ESP")){
                     satype = SADB_SATYPE_ESP;
                 }
@@ -277,7 +292,7 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
                 DBG("mode: %i",mode);
             }
 
-            else if (0 == strcmp("/anti-replay-window", name)) {
+            else if (0 == strcmp("/anti-replay-window-size", name)) {
                 replay = value->data.uint16_val;
                 DBG("anti-replay-window found: %i", replay);
             }
@@ -303,32 +318,124 @@ int getSelectorListSAD_it(sr_session_ctx_t *sess, sr_change_iter_t *it,char *xpa
             }
 
             else if (0 == strcmp("/integrity-algorithm", name)) {
-                auth_alg = getAuthAlg(value->data.string_val);
+                // auth_alg = getAuthAlg(value->data.string_val);
+                DBG("/integrity-algorithm: %d", value->data.uint16_val);
+                if(value->data.uint16_val == 6){
+                    auth_alg = getAuthAlg("hmac-md5-128");
+                }else if(value->data.uint16_val == 2){
+                    auth_alg = getAuthAlg("hmac-sha1-96");
+                }else if(value->data.uint16_val == 7){
+                    auth_alg = getAuthAlg("hamc-sha1-160");
+                }
+
                 DBG ("auth alg %i",auth_alg);
             }
 
             else if (0 == strcmp("/key", name)) {
 	            if (NULL != strstr(value->xpath,"/ah-sa")) {
-                   	strcpy(auth_key,value->data.string_val);
+                    char *data;
+                    int x;
+                    data = value->data.string_val;
+                    strupp(data);
+                    remove_all_chars(data, ':');
+                    char res[500];
+                    int length = strlen(data);
+                    int i;
+                        char buf = 0;
+                        for(i = 0; i < length; i++){
+					    if(i % 2 != 0){
+					    	x = hex_to_ascii(buf, data[i]);
+					    	DBG("%c",x);
+					    	char c = (char)x;
+					    	strncat(res,&c,1);
+					    }else{
+					    	buf = value->data.string_val[i];
+					    }
+				    }
+                   	strcpy(auth_key, res);
                     DBG ("auth key %s",auth_key);
 	            }
 	            if (NULL != strstr(value->xpath,"/esp-sa/encryption")) {
-		           strcpy(encrypt_key,value->data.string_val);
+                    char *data;
+                    int x;
+                    data = value->data.string_val;
+                    strupp(data);
+                    remove_all_chars(data, ':');
+                    char res[500];
+                    int length = strlen(data);
+                    int i;
+                        char buf = 0;
+                        for(i = 0; i < length; i++){
+					    if(i % 2 != 0){
+					    	x = hex_to_ascii(buf, data[i]);
+					    	DBG("%c",x);
+					    	char c = (char)x;
+					    	strncat(res,&c,1);
+					    }else{
+					    	buf = value->data.string_val[i];
+					    }
+				    }
+                    strcpy(encrypt_key, res);
                     DBG ("esp enc key %s",encrypt_key);
             	}
 	            if (NULL != strstr(value->xpath,"/esp-sa/integrity")) {
-                    strcpy(auth_key,value->data.string_val);
+                    char *data;
+                    int x;
+                    data = value->data.string_val;
+                    strupp(data);
+                    remove_all_chars(data, ':');
+                    char res[500];
+                    memset(res, 0, 500*sizeof(char));
+                    int length = strlen(data);
+                    int i;
+                        char buf = 0;
+                        for(i = 0; i < length; i++){
+					    if(i % 2 != 0){
+					    	x = hex_to_ascii(buf, data[i]);
+					    	DBG("%c",x);
+					    	char c = (char)x;
+					    	strncat(res,&c,1);
+					    }else{
+					    	buf = value->data.string_val[i];
+					    }
+				    }
+                    strcpy(auth_key, res);
                     DBG ("esp auth key %s",auth_key);
                 }
             }
             else if (0 == strcmp("/encryption-algorithm", name)) {
                 if (NULL != strstr(value->xpath,"/esp-sa")) {
-        	        encrypt_alg = getEncryptAlg(value->data.string_val);
+        	        // encrypt_alg = getEncryptAlg(value->data.string_val);
+                    //tmp
+                    if(value->data.uint16_val == 3){ // 3 == 3des + getEncryptAlg only support 3des
+                        encrypt_alg = getEncryptAlg("3des");
+                    }
                     DBG ("encrypt alg %i",encrypt_alg);
                 }
             }
             else if (0 == strcmp("/iv", name)) {
                 if (NULL != strstr(value->xpath,"/esp-sa")) {
+                    // tmp_sr_data_t tmp;
+                    // char *data;
+                    // int x;
+                    // data = value->data.string_val;
+                    // strupp(data);
+                    // remove_all_chars(data, ':');
+                    // char res[500];
+                    // int length = strlen(data);
+                    // int i;
+                    //     char buf = 0;
+                    //     for(i = 0; i < length; i++){
+					//     if(i % 2 != 0){
+					//     	x = hex_to_ascii(buf, data[i]);
+					//     	DBG("%c",x);
+					//     	char c = (char)x;
+					//     	strncat(res,&c,1);
+					//     }else{
+					//     	buf = value->data.string_val[i];
+					//     }
+				    // }
+                    // strcpy(tmp.string_val, res);
         	        iv = value->data.int64_val;
                     DBG ("iv %i",iv);
             	}
