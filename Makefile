@@ -1,4 +1,4 @@
-TARGET = ietf-i2nsf-ikeless
+TARGET = ietf-i2nsf-ike
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/ipsec/:/usr/lib/ipsec
 
@@ -18,14 +18,12 @@ OBJ = $(TARGET).o \ base/utils.o 	base/sysrepo_utils.o 	base/log.o 	base/spd_ent
 $(TARGET) : $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS) 
 	rm -f *.o base/*.o *~ core
-	
 
 .PHONY: install
 
 install:
 	sysrepoctl --install --yang=./$(TARGET).yang --owner=root:root --permissions=666
 	sysrepoctl --install --yang=./ietf-i2nsf-ikec.yang --owner=root:root --permissions=666
-	sysrepoctl --install --yang=./ietf-ipsec.yang --owner=root:root --permissions=666
 
 .PHONY: uninstall
 
